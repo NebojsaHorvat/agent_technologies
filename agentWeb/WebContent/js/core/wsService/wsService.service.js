@@ -4,7 +4,7 @@ angular.module('core.wsService')
 	.service('wsService', function($http,$window,$rootScope,$state) {
 		
 		var url = $window.location;
-		var host = "ws://" + url.hostname + ":" + url.port + "/ChatWeb/Socket";
+		var host = "ws://" + url.hostname + ":" + url.port + "/agentWeb/Socket";
 		
 		try {
 			   this.socket = new WebSocket(host);
