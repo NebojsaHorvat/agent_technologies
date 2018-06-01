@@ -1,0 +1,33 @@
+<h2>Create a new account:</h2>
+<form name="registration">
+	<input type="text"
+		class="form-group form-control"
+		placeholder="Username*"
+		ng-model="$ctrl.user.username"
+		required/>
+	<input type="password"
+		class="form-group form-control"
+		placeholder="Password*"
+		ng-model="$ctrl.user.password"
+		minlength="6"
+		required/>
+	<input type="text"
+		class="form-group form-control"
+		placeholder="First Name*"
+		ng-model="$ctrl.user.firstName"
+		pattern="[a-zA-Z]+"
+		required/>
+	<input type="text"
+		class="form-group form-control"
+		placeholder="Last name*"
+		ng-model="$ctrl.user.lastName"
+		pattern="[a-zA-Z]+"
+		required/>
+	<input type="submit"
+		class="btn btn-custom"
+		value="Register"
+		ng-click="registration.$valid && $ctrl.send()"/>
+	<p>
+		{{$ctrl.status}}
+	</p>
+</form>

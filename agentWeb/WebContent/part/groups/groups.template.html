@@ -1,0 +1,27 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-5 col-xl-6 collapse nav-toggled d-md-block ">
+            <form name="registration">
+            	<lable>Usernames:<br></lable>
+				<input type="text"
+					class="form-group form-control"
+					placeholder="Usernames(comma separated)"
+					ng-model="groupVm.usernames"
+					required/>
+					
+				<lable>Group name:<br></lable>
+				<input type="text"
+					class="form-group form-control"
+					placeholder="Group name"
+					ng-model="groupVm.gropuName"
+					pattern="[a-zA-Z]+"
+					required/>
+					
+				<input type="submit"
+					class="btn btn-custom"
+					value="Send"
+					ng-click="groupVm.send()"/>
+			</form>
+        </div>
+    </div>
+</div>
