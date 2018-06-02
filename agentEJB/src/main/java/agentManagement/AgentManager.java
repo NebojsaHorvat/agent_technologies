@@ -33,7 +33,7 @@ public class AgentManager implements AgentManagerLocal{
 	
 	@PostConstruct
 	private void init () {
-		
+		activeAgents = new ArrayList<>();
 	}
 	
 	@PreDestroy
