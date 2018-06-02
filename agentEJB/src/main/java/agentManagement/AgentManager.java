@@ -56,7 +56,11 @@ public class AgentManager implements AgentManagerLocal{
 		return null;
 	}
 
-	
+	@Lock(LockType.READ)
+	public List<Agent> getActiveAgents()
+	{	
+		return activeAgents;
+	}
 	
 	@Lock(LockType.WRITE)
 	public void addAgentToActiveList(Agent agent)
@@ -65,7 +69,7 @@ public class AgentManager implements AgentManagerLocal{
 	}
 	
 	@Lock(LockType.WRITE)
-	public void removeHostFromActiveList(Agent agent)
+	public void removeAgentFromActiveList(Agent agent)
 	{
 		Agent agentForRemoval = null;
 		for(Agent a : activeAgents) {
@@ -78,6 +82,8 @@ public class AgentManager implements AgentManagerLocal{
 		if(agentForRemoval != null)
 			activeAgents.remove(agentForRemoval);
 	}
+	
+	
 	
 	
 	
