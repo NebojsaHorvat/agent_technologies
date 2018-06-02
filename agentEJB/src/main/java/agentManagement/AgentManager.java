@@ -55,6 +55,36 @@ public class AgentManager implements AgentManagerLocal{
 		}
 		return null;
 	}
+
+	
+	
+	@Lock(LockType.WRITE)
+	public void addAgentToActiveList(Agent agent)
+	{
+		activeAgents.add(agent);
+	}
+	
+	@Lock(LockType.WRITE)
+	public void removeHostFromActiveList(Agent agent)
+	{
+		Agent agentForRemoval = null;
+		for(Agent a : activeAgents) {
+			if( a.getAid().equals(agent.getAid())) {
+				agentForRemoval = a;
+			}
+			break;
+		}
+		
+		if(agentForRemoval != null)
+			activeAgents.remove(agentForRemoval);
+	}
+	
+	
+	
+	
+	
+	
+	
 	 /**
 	 * Scans all classes accessible from the context class loader which belong to the given package and subpackages.
 	 *
@@ -104,27 +134,5 @@ public class AgentManager implements AgentManagerLocal{
 	        }
 	    }
 	    return classes;
-	}
-	
-	
-	@Lock(LockType.WRITE)
-	public void addAgentToActiveList(Agent agent)
-	{
-		activeAgents.add(agent);
-	}
-	
-	@Lock(LockType.WRITE)
-	public void removeHostFromActiveList(Agent agent)
-	{
-		Agent agentForRemoval = null;
-		for(Agent a : activeAgents) {
-			if( a.getAid().equals(agent.getAid())) {
-				agentForRemoval = a;
-			}
-			break;
-		}
-		
-		if(agentForRemoval != null)
-			activeAgents.remove(agentForRemoval);
 	}
 }
