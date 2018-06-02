@@ -19,9 +19,9 @@ angular.module('agent-chat')
 				component: 'myChat'
 			})
 			.state({
-				name: 'home.friends',
-				url: 'friends',
-				component: 'friendsComponent'
+				name: 'home.agent_list',
+				url: 'agent_list',
+				component: 'myAgentList'
 			})
 			.state({
 				name: 'home.groups',

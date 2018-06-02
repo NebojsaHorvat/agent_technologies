@@ -1,7 +1,5 @@
 package agentUtilities;
 
-import aclMessage.ACLMessage;
-
 public class Agent {
 	
 	private AID aid;

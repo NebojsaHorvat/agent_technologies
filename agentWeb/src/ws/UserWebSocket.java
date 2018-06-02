@@ -21,6 +21,7 @@ import javax.websocket.server.ServerEndpoint;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import agentManagement.AgentManagerLocal;
 import jmsMessage.JMSMessageToWebSocket;
 import jmsMessage.JMSMessageToWebSocketType;
 import jmsMessage.WebSocketMessage;
@@ -66,6 +67,9 @@ public class UserWebSocket implements MessageListener {
 //	@EJB
 //	private UserClusterManagerLocal userClusterManager;
 
+	@EJB
+	private AgentManagerLocal agentManager;
+	
 	@OnOpen
 	public void onOpen(Session session) {
 		if (!sessions.contains(session)) {
@@ -114,6 +118,8 @@ public class UserWebSocket implements MessageListener {
 				handleLogOut(session);
 			} else if (webSocketMessage.getType() == WebSocketMessageType.REGISTER) {
 				handleRegister(session, webSocketMessage.getContent());
+			} else if (webSocketMessage.getType() == WebSocketMessageType.AGENT_CLASSES) {
+				handleAgentClasses(session, webSocketMessage.getContent());
 			}
 
 		} catch (Exception e) {
@@ -121,6 +127,8 @@ public class UserWebSocket implements MessageListener {
 		}
 
 	}
+
+	
 
 	@OnClose
 	public void close(Session session) {
@@ -177,6 +185,8 @@ public class UserWebSocket implements MessageListener {
 	}
 
 
+	
+	
 	private void handleRegister(Session session, String content) {
 //		User user = null;
 //		try {
@@ -276,6 +286,29 @@ public class UserWebSocket implements MessageListener {
 //		}
 //	}
 
-
+	private void handleAgentClasses(Session session, String content) {
+		
+		Class [] agentClasses= agentManager.getAgentClasses();
+		for (Session s : sessions) {
+			if (s.getId().equals(session.getId())) {
+				session = s;
+			}
+		}
+		try {
+			
+			ObjectMapper mapper = new ObjectMapper();
+			WebSocketMessage wsm = new WebSocketMessage();
+			wsm.setType(WebSocketMessageType.AGENT_CLASSES);
+			String stringClasses = mapper.writeValueAsString(agentClasses);
+			wsm.setContent(stringClasses);
+			String wsmJSON = mapper.writeValueAsString(wsm);
+			System.out.println(wsmJSON);
+			session.getBasicRemote().sendText(wsmJSON);
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
 
 }

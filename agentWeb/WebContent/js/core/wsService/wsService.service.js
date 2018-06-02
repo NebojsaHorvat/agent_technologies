@@ -24,8 +24,8 @@ angular.module('core.wsService')
 					   $rootScope.user = this.contentObjest;
 					   $state.go('home.chat');
 				   }
-				   else if(this.payload.type == 'LAST_CHATS'){
-					   $rootScope.$broadcast('latestChats',this.contentObjest );
+				   else if(this.payload.type == 'AGENT_CLASSES'){
+					   $rootScope.$broadcast('agentClasses',this.contentObjest );
 				   }
 				   else if(this.payload.type == 'MESSAGE'){
 					   $rootScope.$broadcast('MESSAGE',this.contentObjest );
@@ -73,11 +73,11 @@ angular.module('core.wsService')
 					}
 		};
 		
-		 this.getLatestChat = () => {
+		 this.getAgentClasses = () => {
 
 			 this.message ={
-						"type" : "LAST_CHATS",
-						"content" : "5"
+						"type" : "AGENT_CLASSES",
+						"content" : ""
 					   };
 				if(this.socket != null){
 					this.socket.send(JSON.stringify(this.message));

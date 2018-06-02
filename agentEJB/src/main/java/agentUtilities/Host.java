@@ -10,7 +10,7 @@ public class Host {
 
 	public Host() {}
 	
-	public Host(String address, int port, String name) {
+	public Host(String address, String name, int port) {
 		super();
 		this.address = address;
 		this.port = port;
