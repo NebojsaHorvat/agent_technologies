@@ -1,5 +1,6 @@
 'use strict';
 
 angular.module('agent_list', [
-	'ui.router'
+	'ui.router',
+	'core.agent'
 ]);

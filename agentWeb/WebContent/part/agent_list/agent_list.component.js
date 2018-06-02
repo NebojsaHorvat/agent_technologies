@@ -3,10 +3,11 @@
 angular.module('agent_list')
 	.component('myAgentList', {
 		templateUrl: 'part/agent_list/agent_list.template.html',
-		controller: function( $rootScope, $state,wsService,$scope,$element) {
+		controller: function( $rootScope, $state,wsService,$scope,$element,agentService) {
 			
 			wsService.getAgentClasses();
-			
+			 var agentListVm = this;
+			 
 			$rootScope.agentClasses = ['a','b','c'];
 			
 			$scope.$on('agentClasses', function (event, arg) { 
@@ -14,13 +15,17 @@ angular.module('agent_list')
 				$rootScope.agentClasses = arg.filter(function(el){
 					return !el.includes("Local");
 				});
-				//$rootScope.agentClasses = arg;
 				$scope.$apply();
 			  });
 			
-			this.send = () =>{
-//				wsService.sendMessage(this.currentChat,this.content);
-//				$element.find('textarea').val($element.find('textarea').val() +$rootScope.user.username+" : "+ this.content + "\n");
+			this.send = (className) =>{
+				agentService.activateAgent(className,this.agentName)
+				.then( (response) => {
+					alert('Agent added')
+				}, () => {
+					alert('Could not activate agent')
+				});
+				
 			}
 		}
 	});		

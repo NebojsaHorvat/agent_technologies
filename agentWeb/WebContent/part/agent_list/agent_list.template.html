@@ -5,6 +5,11 @@
 			<div class="card-body">
 				<h3 class="card-title">
 						<p>{{class}}</p>
+						<input type="text"
+						class="form-group form-control"
+						placeholder="Agent name"
+						ng-model = "$ctrl.agentName"
+						required/>
 						<button class='btn btn-custom' ng-click="$ctrl.send(class)">Activate agent</button>
 				</h3>
 			</div>

@@ -82,7 +82,8 @@ angular.module('core.wsService')
 				if(this.socket != null){
 					this.socket.send(JSON.stringify(this.message));
 				}
-			};
+		};
+		
 		   
 		 this.sendMessage = (currentChat,content) => {
 
