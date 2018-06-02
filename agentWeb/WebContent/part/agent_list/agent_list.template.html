@@ -1,0 +1,12 @@
+<h2>Agent classes:</h2>
+<div class="row no-gutters align-items-left">
+	<div ng-repeat="class in $root.agentClasses"
+		class="card m-md-1 col-lg-4 col-md-6">
+			<div class="card-body">
+				<h3 class="card-title">
+						<p>{{class}}</p>
+						<button class='btn btn-custom' ng-click="$ctrl.send(class)">Activate agent</button>
+				</h3>
+			</div>
+	</div>
+</div>
