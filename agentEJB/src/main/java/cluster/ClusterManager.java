@@ -54,13 +54,13 @@ public class ClusterManager implements ClusterManagerLocal{
 		
 		// Sad trazim on mastera da me registruje mendju postojece nodove i ubaci u evidenciju
 		ResteasyClient client = new ResteasyClientBuilder().build();
-		String targetString = "http://"+prop.getProperty("MASTER_LOCATION")+":"+prop.getProperty("MASTER_PORT")+"/ChatWeb/rest/cluster/addHost";
+		String targetString = "http://"+prop.getProperty("MASTER_LOCATION")+":"+prop.getProperty("MASTER_PORT")+"/agentWeb/rest/cluster/addHost";
 		ResteasyWebTarget target = client.target(targetString);
 		Response response = target.request().post(Entity.entity(host, MediaType.APPLICATION_JSON));
 		
 		// I posto sam prosao IF i ja nisam master onda cu traziti i od mastera da mi posalje listu svih hostova
 		
-		String targetString1 = "http://"+prop.getProperty("MASTER_LOCATION")+":"+prop.getProperty("MASTER_PORT")+"/ChatWeb/rest/cluster/getAllHosts";
+		String targetString1 = "http://"+prop.getProperty("MASTER_LOCATION")+":"+prop.getProperty("MASTER_PORT")+"/agentWeb/rest/cluster/getAllHosts";
 		ResteasyWebTarget target1 = client.target(targetString1);
 		Response response1 = target1.request(MediaType.APPLICATION_JSON).get();
 		Hosts hosts = response1.readEntity(Hosts.class);
