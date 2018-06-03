@@ -6,11 +6,12 @@ import java.util.Set;
 import javax.ejb.Local;
 
 import agentUtilities.Agent;
+import agentUtilities.AgentClass;
 
 @Local
 public interface AgentManagerLocal {
 
-	public Class[] getAgentClasses();
+	public List<AgentClass> getAgentClasses();
 	
 	public void removeAgentFromActiveList(Agent agent);
 	

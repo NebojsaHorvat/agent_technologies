@@ -5,35 +5,57 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.ejb.EJB;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
-import org.reflections.Reflections;
-import org.reflections.scanners.ResourcesScanner;
-import org.reflections.scanners.SubTypesScanner;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
-import org.reflections.util.FilterBuilder;
-
 import agentUtilities.Agent;
+import agentUtilities.AgentClass;
+import agentUtilities.Host;
+import config.PropertiesSupplierLocal;
 
 @Startup
 @Singleton
 public class AgentManager implements AgentManagerLocal{
-
+	
+	
+	@EJB
+	private PropertiesSupplierLocal prop;
+	
 	private List<Agent> activeAgents;
+	
+	private List<AgentClass> agentClasses;
 	
 	@PostConstruct
 	private void init () {
 		activeAgents = new ArrayList<>();
+		
+		agentClasses = new ArrayList<>();
+		
+		Class[] classes = null;
+		try {
+			
+			classes = getClasses("agentClasses");
+			
+		}catch(Exception e) {
+			System.out.println("LOADING CLASSES FAILED\n");
+			e.printStackTrace();
+		}
+		for(int i = 0; i < classes.length; i++) {
+			Host host = new Host(
+					prop.getProperty("LOCATION"),
+					prop.getProperty("NAME_OF_NODE"),
+					Integer.parseInt(prop.getProperty("PORT")) );
+			AgentClass agentClass = new AgentClass(classes[i], host);
+			agentClasses.add(agentClass);
+		}
+		
 	}
 	
 	@PreDestroy
@@ -43,17 +65,17 @@ public class AgentManager implements AgentManagerLocal{
 	
 	@Override
 	@Lock(LockType.READ)
-	public Class[] getAgentClasses()
+	public List<AgentClass> getAgentClasses()
 	{
-		try {
-			
-		return getClasses("agentClasses");
-		
-		}catch(Exception e) {
-			System.out.println("LOADING FAILED\n");
-			e.printStackTrace();
-		}
-		return null;
+//		try {
+//			
+//		return getClasses("agentClasses");
+//		
+//		}catch(Exception e) {
+//			System.out.println("LOADING FAILED\n");
+//			e.printStackTrace();
+//		}
+		return agentClasses;
 	}
 
 	@Lock(LockType.READ)

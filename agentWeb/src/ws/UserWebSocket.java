@@ -3,6 +3,7 @@ package ws;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,8 +23,8 @@ import javax.websocket.server.ServerEndpoint;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import agentManagement.AgentManagerLocal;
+import agentUtilities.AgentClass;
 import jmsMessage.JMSMessageToWebSocket;
-import jmsMessage.JMSMessageToWebSocketType;
 import jmsMessage.WebSocketMessage;
 import jmsMessage.WebSocketMessageType;
 
@@ -288,7 +289,7 @@ public class UserWebSocket implements MessageListener {
 
 	private void handleAgentClasses(Session session, String content) {
 		
-		Class [] agentClasses= agentManager.getAgentClasses();
+		List<AgentClass> agentClasses= agentManager.getAgentClasses();
 		for (Session s : sessions) {
 			if (s.getId().equals(session.getId())) {
 				session = s;

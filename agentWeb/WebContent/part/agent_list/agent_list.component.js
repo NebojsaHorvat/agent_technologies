@@ -13,13 +13,13 @@ angular.module('agent_list')
 			$scope.$on('agentClasses', function (event, arg) { 
 				
 				$rootScope.agentClasses = arg.filter(function(el){
-					return !el.includes("Local");
+					return !el.agentClass.includes("Local");
 				});
 				$scope.$apply();
 			  });
 			
-			this.send = (className) =>{
-				agentService.activateAgent(className,this.agentName)
+			this.send = (agentClass) =>{
+				agentService.activateAgent(agentClass.agentClass,this.agentName,agentClass.host)
 				.then( (response) => {
 					alert('Agent added')
 				}, () => {

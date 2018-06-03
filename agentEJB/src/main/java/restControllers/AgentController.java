@@ -1,9 +1,10 @@
 package restControllers;
 
+import java.util.List;
+
 import javax.ejb.EJB;
 import javax.enterprise.inject.spi.Bean;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -14,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import agentManagement.AgentManagerLocal;
 import agentUtilities.AID;
 import agentUtilities.Agent;
+import agentUtilities.AgentClass;
 import agentUtilities.AgentType;
 import agentUtilities.Host;
 import config.PropertiesSupplierLocal;
@@ -31,31 +33,35 @@ public class AgentController {
 	@GET
 	@Path("/classes")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Class[] getAgentClasses(){
+	public List<AgentClass> getAgentClasses(){
 		
-		Class[] agentClasses = agentManager.getAgentClasses();
-		return agentClasses;
+		return agentManager.getAgentClasses();
 	}
 	
 	@POST
 	@Path("/running/{className}/{agentName}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Agent startAgent(@PathParam("className") String className,@PathParam("agentName") String agentName ) {
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Agent startAgent(@PathParam("className") String className,@PathParam("agentName") String agentName,Host host ) {
 		
 		String[] names = className.split("\\.");
 		try {
 			//TODO Trebalo bi naci agenta preko JNDI-a
 			//Agent agent = (Agent)(new InitialContext().lookup("java:app/serverapp/"+names[1]));
+			String thisNode = prop.getProperty("NAME_OF_NODE");
+			if(thisNode.equals(host.getName())) {
+				AgentType agentType = new AgentType(className, "idk");
+				AID aid = new AID(agentName, host, agentType);
+				Agent agent = new Agent(aid, agentType);
+				agentManager.addAgentToActiveList(agent);
+				return agent;
 			
-			Host host = new Host(
-					prop.getProperty("LOCATION"),
-					prop.getProperty("NAME_OF_NODE"),
-					Integer.parseInt(prop.getProperty("PORT")) );
-			AgentType agentType = new AgentType(className, "idk");
-			AID aid = new AID(agentName, host, agentType);
-			Agent agent = new Agent(aid, agentType);
-			agentManager.addAgentToActiveList(agent);
-			return agent;
+			}else{
+				//TODO Poslati tom cvoru na kom je agent da ga napravi
+				return null;
+			}
+			
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
