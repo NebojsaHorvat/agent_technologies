@@ -16,4 +16,6 @@ public interface ClusterManagerLocal {
 
 	public List<Host> getAllHost();
 
+	public void tellAllNodesAboutNewNode(Host host);
+
 }

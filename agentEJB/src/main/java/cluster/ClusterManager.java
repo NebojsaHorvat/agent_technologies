@@ -41,7 +41,6 @@ public class ClusterManager implements ClusterManagerLocal{
 		activeHosts = new ArrayList<>();
 		
 		String isMaster = prop.getProperty("IS_MASTER");
-		// TODO PROMENITI OVO NA FALSE POSLE TESTIRANJA
 		if( isMaster.equals("true"))// pre isMaster... NE treba da ide !
 			return ;
 		// Napravim objekat Host koji predtavlja ovaj node koji salje masteru da se registruje
@@ -114,5 +113,18 @@ public class ClusterManager implements ClusterManagerLocal{
 	@Override
 	public List<Host> getAllHost() {
 		return activeHosts;
+	}
+
+	@Override
+	public void tellAllNodesAboutNewNode(Host host) {
+		
+		for(Host h :activeHosts){
+			
+			ResteasyClient client = new ResteasyClientBuilder().build();
+			String targetString = "http://"+h.getAddress()+":"+h.getPort()+"/agentWeb/rest/cluster/addHost";
+			ResteasyWebTarget target = client.target(targetString);
+			Response response = target.request().post(Entity.entity(host, MediaType.APPLICATION_JSON));
+		}
+		
 	}
 }

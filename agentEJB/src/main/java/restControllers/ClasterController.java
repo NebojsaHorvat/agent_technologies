@@ -33,10 +33,7 @@ public class ClasterController {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String addHost(Host host) {
 		
-		String isMaster = prop.getProperty("IS_MASTER");
-		if(!isMaster.equals("true"))
-			return "no no";
-		
+		// I da jesan i da nisam master ja dodajem novi cvor u listu svojih cvorova
 		List<Host> hosts = clusterManager.getAllHost();
 		for(Host h : hosts) {
 			if(h.getName().equals(host.getName()))
@@ -44,6 +41,14 @@ public class ClasterController {
 		}
 		clusterManager.addHostToActiveList(host);
 		
+		
+		// Ako sam master to znaci da treba da javim svim ostalim cvorovima o tome da se pojavio novi cvor
+		String isMaster = prop.getProperty("IS_MASTER");
+		if(isMaster.equals("true")) {
+			
+			clusterManager.tellAllNodesAboutNewNode(host);
+		}
+			
 		return "ok";
 	}
 	
