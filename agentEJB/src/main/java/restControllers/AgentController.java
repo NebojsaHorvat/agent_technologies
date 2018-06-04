@@ -1,5 +1,6 @@
 package restControllers;
 
+import java.lang.reflect.Constructor;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -53,7 +54,29 @@ public class AgentController {
 			if(thisNode.equals(host.getName())) {
 				AgentType agentType = new AgentType(className, "idk");
 				AID aid = new AID(agentName, host, agentType);
-				Agent agent = new Agent(aid, agentType);
+				Class[] classes = agentManager.getClassesFromManager("agentClasses");
+				Class agentClass = null;
+				for(Class c : classes) {
+					String cName = c.getName();
+					if(cName.equals(className)){
+						agentClass = c;
+						break;
+					}
+				}
+				if(agentClass == null)
+					return null;
+				
+				Constructor constructor = null;
+				Agent agent = null;
+				try {
+					constructor = agentClass.getDeclaredConstructor(AID.class,AgentType.class);
+					agent = (Agent)constructor.newInstance(aid,agentType);
+				}catch(Exception e) {
+					e.printStackTrace();
+				}
+				if(agent == null)
+					return null;
+				
 				agentManager.addAgentToActiveList(agent);
 				return agent;
 			

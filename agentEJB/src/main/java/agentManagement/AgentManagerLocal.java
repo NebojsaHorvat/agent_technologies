@@ -24,4 +24,5 @@ public interface AgentManagerLocal {
 	
 	public void addAgentClasses(List<AgentClass> newAgentClasses);
 	
+	public Class[] getClassesFromManager(String packageName);
 }

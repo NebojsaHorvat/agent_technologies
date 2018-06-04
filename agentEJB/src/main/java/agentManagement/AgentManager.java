@@ -178,6 +178,17 @@ public class AgentManager implements AgentManagerLocal{
 		}
 	}
 	
+	@Override
+	public Class[] getClassesFromManager(String packageName) {
+		try {
+			return getClasses(packageName);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	
 	
 	
@@ -233,6 +244,8 @@ public class AgentManager implements AgentManagerLocal{
 	    }
 	    return classes;
 	}
+
+	
 
 	
 }
