@@ -5,6 +5,7 @@ import java.util.Set;
 
 import javax.ejb.Local;
 
+import agentUtilities.AID;
 import agentUtilities.Agent;
 import agentUtilities.AgentClass;
 import agentUtilities.Host;
@@ -25,4 +26,6 @@ public interface AgentManagerLocal {
 	public void addAgentClasses(List<AgentClass> newAgentClasses);
 	
 	public Class[] getClassesFromManager(String packageName);
+
+	public Agent deleteRunningAgent(AID aid);
 }

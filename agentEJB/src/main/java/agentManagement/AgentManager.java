@@ -28,6 +28,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import agentUtilities.AID;
 import agentUtilities.Agent;
 import agentUtilities.AgentClass;
 import agentUtilities.AgentClasses;
@@ -189,7 +190,21 @@ public class AgentManager implements AgentManagerLocal{
 		return null;
 	}
 	
-	
+	@Override
+	public Agent deleteRunningAgent(AID aid) {
+		Agent agentToRemove = null;
+		for(Agent agent : activeAgents ) {
+			if(agent.getAid().equals(aid)) {
+				agentToRemove = agent;
+				break;
+			}
+		}
+		if(agentToRemove == null)
+			return null;
+		activeAgents.remove(agentToRemove);
+		
+		return agentToRemove;
+	}
 	
 	
 	
@@ -244,6 +259,8 @@ public class AgentManager implements AgentManagerLocal{
 	    }
 	    return classes;
 	}
+
+	
 
 	
 

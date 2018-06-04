@@ -20,6 +20,7 @@ import agentUtilities.AgentClass;
 import agentUtilities.AgentClasses;
 import agentUtilities.AgentType;
 import agentUtilities.Host;
+import agentUtilities.RunningAgents;
 import config.PropertiesSupplierLocal;
 
 @Path("/agents")
@@ -40,6 +41,29 @@ public class AgentController {
 		return new AgentClasses(agentManager.getAgentClasses());
 	}
 	
+	@GET
+	@Path("/running")
+	@Produces(MediaType.APPLICATION_JSON)
+	public RunningAgents getRunningAgents(){
+		
+		return new RunningAgents(agentManager.getActiveAgents());
+	}
+	
+	@POST
+	@Path("/running/delete")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Agent deleteRunningAgent( AID aid) {
+		
+		Host agentHost = aid.getHost();
+		if( prop.getProperty("NAME_OF_NODE").equals(agentHost.getName()) ) {
+			agentManager.deleteRunningAgent(aid);
+		}else {
+			// TODO ako agent nije na ovom nodu posalt drugom nodu da ga obirse
+		}
+		
+		return null;
+	}
 	@POST
 	@Path("/running/{className}/{agentName}")
 	@Produces(MediaType.APPLICATION_JSON)

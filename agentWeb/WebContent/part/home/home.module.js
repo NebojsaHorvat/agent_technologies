@@ -7,5 +7,6 @@ angular.module('home', [
 	'core.wsService',
 	'chat',
 	'agent_list',
+	'agents_active',
 	'groups'
 ]);
