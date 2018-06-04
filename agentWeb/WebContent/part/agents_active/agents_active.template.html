@@ -1,12 +1,12 @@
 <h2>Active Agents:</h2>
 <div class="row no-gutters align-items-left">
-	<div ng-repeat="agent in $root.activeAgents"
+	<div ng-repeat="aid in $root.activeAgents"
 		class="card m-md-1 col-lg-4 col-md-6">
 			<div class="card-body">
 				<h3 class="card-title">
-						<p>{{agent.aid.name}}</p>
-						<p>Location: {{agent.aid.host.name}}</p>
-						<button class='btn btn-custom' ng-click="$ctrl.stopAgent(agent)">Deactivate agent</button>
+						<p>{{aid.name}}</p>
+						<p>Location: {{aid.host.name}}</p>
+						<button class='btn btn-custom' ng-click="$ctrl.stopAgent(aid)">Deactivate agent</button>
 				</h3>
 			</div>
 	</div>

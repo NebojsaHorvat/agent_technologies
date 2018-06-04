@@ -42,17 +42,20 @@ public class ClusterManager implements ClusterManagerLocal{
 	private void init () {
 		activeHosts = new ArrayList<>();
 		
-		String isMaster = prop.getProperty("IS_MASTER");
-		if( isMaster.equals("true"))// pre isMaster... NE treba da ide !
-			return ;
-		// Napravim objekat Host koji predtavlja ovaj node koji salje masteru da se registruje
 		Host host = new Host(
 				prop.getProperty("LOCATION"),
 				prop.getProperty("NAME_OF_NODE"),
 				Integer.parseInt(prop.getProperty("PORT")) );
+		
+		String isMaster = prop.getProperty("IS_MASTER");
+		if( isMaster.equals("true")) {
+			activeHosts.add(host);
+			return ;
+		}
+			
+		// Salje sebe masteru da se registruje
 		try {
 			
-		
 		// Sad trazim on mastera da me registruje mendju postojece nodove i ubaci u evidenciju
 		ResteasyClient client = new ResteasyClientBuilder().build();
 		String targetString = "http://"+prop.getProperty("MASTER_LOCATION")+":"+prop.getProperty("MASTER_PORT")+"/agentWeb/rest/cluster/addHost";

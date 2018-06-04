@@ -22,12 +22,12 @@ angular.module('agents_active')
 //				$scope.$apply();
 //			  });
 			
-			this.stopAgent = (agent) =>{ 
-				agentService.stopAgent(agent)
+			this.stopAgent = (aid) =>{ 
+				agentService.stopAgent(aid)
 				.then( (response) => {
-					var a = agent; 
+					var a = aid; 
 					$rootScope.activeAgents = $rootScope.activeAgents.filter(function(el){
-						return el.aid !== a.aid;
+						return el !== a;
 					});
 				}, () => {
 					alert('Could not stop agent')

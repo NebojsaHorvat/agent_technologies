@@ -46,7 +46,7 @@ public class AgentController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public RunningAgents getRunningAgents(){
 		
-		return new RunningAgents(agentManager.getActiveAgents());
+		return new RunningAgents(agentManager.getActiveAgentsOnAllNodes());
 	}
 	
 	@POST

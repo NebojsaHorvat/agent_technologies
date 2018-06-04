@@ -10,6 +10,6 @@ angular.module('core.agent')
 			return $http.get('/agentWeb/rest/agents/running');
 		};
 		this.stopAgent = (agent) => {
-			return $http.post('/agentWeb/rest/agents/running/delete',agent.aid);
+			return $http.post('/agentWeb/rest/agents/running/delete',agent);
 		};
 	});

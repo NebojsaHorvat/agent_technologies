@@ -14,9 +14,7 @@ import agentUtilities.Host;
 public interface AgentManagerLocal {
 
 	public List<AgentClass> getAgentClasses();
-	
-	public void removeAgentFromActiveList(Agent agent);
-	
+		
 	public List<Agent> getActiveAgents();
 	
 	public void addAgentToActiveList(Agent agent);
@@ -28,4 +26,9 @@ public interface AgentManagerLocal {
 	public Class[] getClassesFromManager(String packageName);
 
 	public Agent deleteRunningAgent(AID aid);
+	
+	public void addAgentToActiveListFromAnotherNoad(AID aid);
+	
+	public List<AID> getActiveAgentsOnAllNodes();
+
 }

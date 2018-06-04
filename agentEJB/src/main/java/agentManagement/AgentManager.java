@@ -49,6 +49,8 @@ public class AgentManager implements AgentManagerLocal{
 	
 	private List<Agent> activeAgents;
 	
+	private List<AID> activeAgentsOnAllNodes;
+	
 	private List<AgentClass> agentClasses;
 	
 	@PostConstruct
@@ -56,6 +58,8 @@ public class AgentManager implements AgentManagerLocal{
 		activeAgents = new ArrayList<>();
 		
 		agentClasses = new ArrayList<>();
+		
+		activeAgentsOnAllNodes = new ArrayList<>();
 		
 		Class[] classes = null;
 		try {
@@ -95,6 +99,12 @@ public class AgentManager implements AgentManagerLocal{
 		return activeAgents;
 	}
 	
+	@Lock(LockType.READ)
+	public List<AID> getActiveAgentsOnAllNodes()
+	{	
+		return activeAgentsOnAllNodes;
+	}
+	
 	@Lock(LockType.WRITE)
 	public void addAgentClasses(List<AgentClass> newAgentClasses)
 	{
@@ -105,21 +115,13 @@ public class AgentManager implements AgentManagerLocal{
 	public void addAgentToActiveList(Agent agent)
 	{
 		activeAgents.add(agent);
+		activeAgentsOnAllNodes.add(agent.getAid());
 	}
 	
 	@Lock(LockType.WRITE)
-	public void removeAgentFromActiveList(Agent agent)
+	public void addAgentToActiveListFromAnotherNoad(AID aid)
 	{
-		Agent agentForRemoval = null;
-		for(Agent a : activeAgents) {
-			if( a.getAid().equals(agent.getAid())) {
-				agentForRemoval = a;
-			}
-			break;
-		}
-		
-		if(agentForRemoval != null)
-			activeAgents.remove(agentForRemoval);
+		activeAgentsOnAllNodes.add(aid);
 	}
 	
 	
@@ -191,6 +193,7 @@ public class AgentManager implements AgentManagerLocal{
 	}
 	
 	@Override
+	@Lock(LockType.WRITE)
 	public Agent deleteRunningAgent(AID aid) {
 		Agent agentToRemove = null;
 		for(Agent agent : activeAgents ) {
@@ -202,6 +205,7 @@ public class AgentManager implements AgentManagerLocal{
 		if(agentToRemove == null)
 			return null;
 		activeAgents.remove(agentToRemove);
+		activeAgentsOnAllNodes.remove(aid);
 		
 		return agentToRemove;
 	}
