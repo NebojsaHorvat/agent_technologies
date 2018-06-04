@@ -9,15 +9,30 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.ejb.DependsOn;
 import javax.ejb.EJB;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import org.jboss.resteasy.client.jaxrs.ResteasyClient;
+import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
+import org.jboss.security.auth.spi.Users;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import agentUtilities.Agent;
 import agentUtilities.AgentClass;
+import agentUtilities.AgentClasses;
 import agentUtilities.Host;
+import cluster.ClusterManagerLocal;
 import config.PropertiesSupplierLocal;
 
 @Startup
@@ -27,6 +42,9 @@ public class AgentManager implements AgentManagerLocal{
 	
 	@EJB
 	private PropertiesSupplierLocal prop;
+	
+	@EJB
+	private ClusterManagerLocal clusterManager;
 	
 	private List<Agent> activeAgents;
 	
@@ -67,14 +85,6 @@ public class AgentManager implements AgentManagerLocal{
 	@Lock(LockType.READ)
 	public List<AgentClass> getAgentClasses()
 	{
-//		try {
-//			
-//		return getClasses("agentClasses");
-//		
-//		}catch(Exception e) {
-//			System.out.println("LOADING FAILED\n");
-//			e.printStackTrace();
-//		}
 		return agentClasses;
 	}
 
@@ -82,6 +92,12 @@ public class AgentManager implements AgentManagerLocal{
 	public List<Agent> getActiveAgents()
 	{	
 		return activeAgents;
+	}
+	
+	@Lock(LockType.WRITE)
+	public void addAgentClasses(List<AgentClass> newAgentClasses)
+	{
+		agentClasses.addAll(newAgentClasses);
 	}
 	
 	@Lock(LockType.WRITE)
@@ -106,7 +122,59 @@ public class AgentManager implements AgentManagerLocal{
 	}
 	
 	
-	
+	@Override
+	public void getAgentClassesAndTellOthersAboutNewOnes(Host host) {
+
+		ResteasyClient client = new ResteasyClientBuilder().build();
+		String targetString = "http://"+host.getAddress()+":"+host.getPort()+"/agentWeb/rest/agents/classes";
+		ResteasyWebTarget target = client.target(targetString);
+		Response response = target.request(MediaType.APPLICATION_JSON).get();
+		
+		String jsonClasses = response.readEntity(String.class);
+		ObjectMapper objectMapper = new ObjectMapper();
+		AgentClasses as = null;
+		List<AgentClass> newHostsClasses = null;
+		try {
+			as = objectMapper.readValue(jsonClasses, AgentClasses.class);
+			newHostsClasses = as.getAgentClasses();
+		} catch (Exception e) {
+			System.out.println("COULD NOT CONVERT AGENT_CLASSES");
+			e.printStackTrace();
+			return;
+		}
+		
+		// Prodjem kroz sve klase koje ima novi host vidim da li ona vec postoji kod mene u listi
+		// Ako ne postoji to znaci da je ona nova i da treba javiti ostalim hostovima da postoji nova klasa
+		
+		ArrayList<AgentClass> newClasses = new ArrayList<>();
+		for(AgentClass acNew: newHostsClasses) {
+			boolean found = false;
+			AgentClass forAdding = null;
+			for(AgentClass acOld: agentClasses) {
+				if( acNew.getAgentClass().getName().equals( acOld.getAgentClass().getName())  ){
+					found = true;
+					forAdding = acNew;
+					break;
+				}
+			}
+			if(found == false) {
+				newClasses.add(acNew);
+			}
+		}
+		
+		if(newClasses.isEmpty())
+			return;
+		
+		// Sada treba sebi (masteru) da dodam nove klase i da prodjem kroz ostale hostove i da njima dodam nove klase
+		agentClasses.addAll(newClasses);
+		
+		List<Host> hosts = clusterManager.getAllHost();
+		for(Host h :hosts){
+			targetString = "http://"+h.getAddress()+":"+h.getPort()+"/agentWeb/rest/agents/classes";
+			target = client.target(targetString);
+			response = target.request().post(Entity.entity(newClasses, MediaType.APPLICATION_JSON));
+		}
+	}
 	
 	
 	
@@ -163,4 +231,6 @@ public class AgentManager implements AgentManagerLocal{
 	    }
 	    return classes;
 	}
+
+	
 }

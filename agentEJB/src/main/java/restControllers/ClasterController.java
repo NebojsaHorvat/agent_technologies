@@ -11,6 +11,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import agentManagement.AgentManagerLocal;
 import agentUtilities.Host;
 import agentUtilities.Hosts;
 import cluster.ClusterManagerLocal;
@@ -25,31 +26,41 @@ public class ClasterController {
 	private ClusterManagerLocal clusterManager;
 	
 	@EJB
+	private AgentManagerLocal agentManager;
+	
+	@EJB
 	private PropertiesSupplierLocal prop;
 	
 	@POST
 	@Path("/addHost")
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.TEXT_PLAIN)
-	public String addHost(Host host) {
+	@Produces(MediaType.APPLICATION_JSON)
+	public Hosts addHost(Host host) {
 		
 		// I da jesan i da nisam master ja dodajem novi cvor u listu svojih cvorova
 		List<Host> hosts = clusterManager.getAllHost();
 		for(Host h : hosts) {
 			if(h.getName().equals(host.getName()))
-				return "failed";
+				return new Hosts (clusterManager.getAllHost());
 		}
 		clusterManager.addHostToActiveList(host);
-		
+		Hosts ret =  new Hosts (clusterManager.getAllHost());
 		
 		// Ako sam master to znaci da treba da javim svim ostalim cvorovima o tome da se pojavio novi cvor
+		// I master treba da trazi od novog cvora sve njegove klase i ako ima nekih novih da to javi ostalim cvorovima
 		String isMaster = prop.getProperty("IS_MASTER");
 		if(isMaster.equals("true")) {
 			
-			clusterManager.tellAllNodesAboutNewNode(host);
+			 new Thread() {
+		         public void run() {
+		        	 clusterManager.tellAllNodesAboutNewNode(host);
+		 			
+		 			agentManager.getAgentClassesAndTellOthersAboutNewOnes(host);
+		         }
+		      }.start();
 		}
 			
-		return "ok";
+		return ret;
 	}
 	
 	

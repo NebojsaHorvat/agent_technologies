@@ -16,6 +16,7 @@ import agentManagement.AgentManagerLocal;
 import agentUtilities.AID;
 import agentUtilities.Agent;
 import agentUtilities.AgentClass;
+import agentUtilities.AgentClasses;
 import agentUtilities.AgentType;
 import agentUtilities.Host;
 import config.PropertiesSupplierLocal;
@@ -33,9 +34,9 @@ public class AgentController {
 	@GET
 	@Path("/classes")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<AgentClass> getAgentClasses(){
+	public AgentClasses getAgentClasses(){
 		
-		return agentManager.getAgentClasses();
+		return new AgentClasses(agentManager.getAgentClasses());
 	}
 	
 	@POST
@@ -66,6 +67,13 @@ public class AgentController {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	@POST
+	@Path("/classes")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void receiveNewClasses(List<AgentClass> agentClasses){
+		agentManager.addAgentClasses(agentClasses);
 	}
 	
 	

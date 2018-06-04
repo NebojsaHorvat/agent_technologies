@@ -7,6 +7,7 @@ import javax.ejb.Local;
 
 import agentUtilities.Agent;
 import agentUtilities.AgentClass;
+import agentUtilities.Host;
 
 @Local
 public interface AgentManagerLocal {
@@ -18,4 +19,9 @@ public interface AgentManagerLocal {
 	public List<Agent> getActiveAgents();
 	
 	public void addAgentToActiveList(Agent agent);
+
+	public void getAgentClassesAndTellOthersAboutNewOnes(Host host);
+	
+	public void addAgentClasses(List<AgentClass> newAgentClasses);
+	
 }
