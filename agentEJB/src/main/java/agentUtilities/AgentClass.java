@@ -2,23 +2,23 @@ package agentUtilities;
 
 public class AgentClass {
 
-	Class agentClass;
+	String agentClass;
 	
 	Host host;
 
 	public AgentClass( ) {}
 	
-	public AgentClass(Class agentClass, Host host) {
+	public AgentClass(String agentClass, Host host) {
 		super();
 		this.agentClass = agentClass;
 		this.host = host;
 	}
 
-	public Class getAgentClass() {
+	public String getAgentClass() {
 		return agentClass;
 	}
 
-	public void setAgentClass(Class agentClass) {
+	public void setAgentClass(String agentClass) {
 		this.agentClass = agentClass;
 	}
 

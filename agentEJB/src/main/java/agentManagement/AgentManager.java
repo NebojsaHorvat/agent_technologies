@@ -70,7 +70,7 @@ public class AgentManager implements AgentManagerLocal{
 					prop.getProperty("LOCATION"),
 					prop.getProperty("NAME_OF_NODE"),
 					Integer.parseInt(prop.getProperty("PORT")) );
-			AgentClass agentClass = new AgentClass(classes[i], host);
+			AgentClass agentClass = new AgentClass(classes[i].getName(), host);
 			agentClasses.add(agentClass);
 		}
 		
@@ -151,7 +151,7 @@ public class AgentManager implements AgentManagerLocal{
 			boolean found = false;
 			AgentClass forAdding = null;
 			for(AgentClass acOld: agentClasses) {
-				if( acNew.getAgentClass().getName().equals( acOld.getAgentClass().getName())  ){
+				if( acNew.getAgentClass().equals( acOld.getAgentClass())  ){
 					found = true;
 					forAdding = acNew;
 					break;
@@ -170,6 +170,8 @@ public class AgentManager implements AgentManagerLocal{
 		
 		List<Host> hosts = clusterManager.getAllHost();
 		for(Host h :hosts){
+			if(h.getName().equals(host.getName()))
+				continue;
 			targetString = "http://"+h.getAddress()+":"+h.getPort()+"/agentWeb/rest/agents/classes";
 			target = client.target(targetString);
 			response = target.request().post(Entity.entity(newClasses, MediaType.APPLICATION_JSON));
