@@ -109,6 +109,17 @@ public class AgentManager implements AgentManagerLocal{
 	public void addAgentClasses(List<AgentClass> newAgentClasses)
 	{
 		agentClasses.addAll(newAgentClasses);
+		
+		// TODO Javi to na webSocket
+
+	}
+	
+	@Lock(LockType.WRITE)
+	public void removeAgentClasses(List<AgentClass> agentClassesForRemoval)
+	{
+		agentClasses.removeAll(agentClassesForRemoval);
+		
+		// TODO Javi to na webSocket
 	}
 	
 	
@@ -117,12 +128,18 @@ public class AgentManager implements AgentManagerLocal{
 	public void addAgentToActiveListFromAnotherNoad(AID aid)
 	{
 		activeAgentsOnAllNodes.add(aid);
+		
+		// TODO Javi to na webSocket
+
 	}
 	
 	@Lock(LockType.WRITE)
-	public void removeAgentToActiveListFromAnotherNoad(AID aid)
+	public void removeAgentsFromActiveListFromAnotherNoad(List<AID> aids)
 	{
-		activeAgentsOnAllNodes.remove(aid);
+		activeAgentsOnAllNodes.removeAll(aids);
+		
+		// TODO Javi to na webSocket
+
 	}
 	
 	@Override
@@ -197,6 +214,9 @@ public class AgentManager implements AgentManagerLocal{
 			ResteasyWebTarget target = client.target(targetString);
 			Response response = target.request().post(Entity.entity(agent.getAid(), MediaType.APPLICATION_JSON));
 		}
+		
+		// TODO Javi to na webSocket
+
 	}
 
 	@Override
@@ -224,7 +244,9 @@ public class AgentManager implements AgentManagerLocal{
 			ResteasyWebTarget target = client.target(targetString);
 			Response response = target.request().post(Entity.entity(aid, MediaType.APPLICATION_JSON));
 		}
-				
+		
+		// TODO Javi to na webSocket
+		
 		return agentToRemove;
 	}
 	

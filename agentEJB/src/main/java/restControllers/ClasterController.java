@@ -88,4 +88,20 @@ public class ClasterController {
 		return hosts;
 	}
 	
+	@GET
+	@Path("/node")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String checkIfAlive() {
+		
+		return "alive";
+	}
+	
+	@POST
+	@Path("/node/delete")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteNode(Host host) {
+		
+		clusterManager.removeHostFromActiveListAndDeleteHisStuff(host);
+	}
+	
 }

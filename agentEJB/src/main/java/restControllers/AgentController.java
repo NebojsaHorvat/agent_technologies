@@ -1,6 +1,7 @@
 package restControllers;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -68,9 +69,10 @@ public class AgentController {
 	@Path("/tellAboutStopedAgent")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void tellAboutStopedAgent( AID aid) {
-		
-		agentManager.removeAgentToActiveListFromAnotherNoad(aid);
-		
+
+		List<AID> aids = new ArrayList<>();
+		aids.add(aid);
+		agentManager.removeAgentsFromActiveListFromAnotherNoad(aids);
 	}
 	
 	@POST

@@ -21,6 +21,9 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
+import agentManagement.AgentManagerLocal;
+import agentUtilities.AID;
+import agentUtilities.AgentClass;
 import agentUtilities.Host;
 import agentUtilities.Hosts;
 import config.PropertiesSupplierLocal;
@@ -34,6 +37,9 @@ public class ClusterManager implements ClusterManagerLocal{
 
 	@EJB
 	private PropertiesSupplierLocal prop;
+	
+	@EJB
+	private AgentManagerLocal agentManager;
 	
 	private List<Host> activeHosts;
 	
@@ -90,6 +96,7 @@ public class ClusterManager implements ClusterManagerLocal{
 	}
 	
 	
+	
 	@Lock(LockType.WRITE)
 	public void addHostToActiveList(Host host)
 	{
@@ -129,5 +136,28 @@ public class ClusterManager implements ClusterManagerLocal{
 			Response response = target.request().post(Entity.entity(host, MediaType.APPLICATION_JSON));
 		}
 		
+	}
+
+	@Override
+	public void removeHostFromActiveListAndDeleteHisStuff(Host hostToDelete) {
+		activeHosts.remove(hostToDelete);
+		
+		List<AID> activeAgentsOnAllNodes = agentManager.getActiveAgentsOnAllNodes();
+		List<AID> activeAgentsForRemoval = new ArrayList<>();
+		for(AID aid : activeAgentsOnAllNodes) {
+			if( ! aid.getHost().equals(hostToDelete)) 
+				continue;
+			activeAgentsForRemoval.add(aid);
+		}
+		agentManager.removeAgentsFromActiveListFromAnotherNoad(activeAgentsForRemoval);
+		
+		List<AgentClass> agentClasses = agentManager.getAgentClasses();
+		List<AgentClass> agentClassesForRemoval = new ArrayList<>();
+		for(AgentClass agentClass : agentClasses) {
+			if( ! agentClass.getHost().equals(hostToDelete))
+				continue;
+			agentClassesForRemoval.add(agentClass);
+		}
+		agentManager.removeAgentClasses(agentClassesForRemoval);
 	}
 }

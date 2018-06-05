@@ -18,4 +18,6 @@ public interface ClusterManagerLocal {
 
 	public void tellAllNodesAboutNewNode(Host host);
 
+	public void removeHostFromActiveListAndDeleteHisStuff(Host hostToDelete);
+
 }
