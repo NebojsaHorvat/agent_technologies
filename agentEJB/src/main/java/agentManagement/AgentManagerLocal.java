@@ -31,4 +31,6 @@ public interface AgentManagerLocal {
 	
 	public List<AID> getActiveAgentsOnAllNodes();
 
+	public void removeAgentToActiveListFromAnotherNoad(AID aid);
+
 }

@@ -11,7 +11,13 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import org.jboss.resteasy.client.jaxrs.ResteasyClient;
+import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
 import agentManagement.AgentManagerLocal;
 import agentUtilities.AID;
@@ -50,6 +56,24 @@ public class AgentController {
 	}
 	
 	@POST
+	@Path("/tellAboutNewAgent")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void tellAboutNewAgent( AID aid) {
+		
+		agentManager.addAgentToActiveListFromAnotherNoad(aid);
+		
+	}
+	
+	@POST
+	@Path("/tellAboutStopedAgent")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void tellAboutStopedAgent( AID aid) {
+		
+		agentManager.removeAgentToActiveListFromAnotherNoad(aid);
+		
+	}
+	
+	@POST
 	@Path("/running/delete")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -60,6 +84,10 @@ public class AgentController {
 			agentManager.deleteRunningAgent(aid);
 		}else {
 			// TODO ako agent nije na ovom nodu posalt drugom nodu da ga obirse
+			ResteasyClient client = new ResteasyClientBuilder().build();
+			String targetString = "http://"+agentHost.getAddress()+":"+agentHost.getPort()+"/agentWeb/rest/agents/running/delete";
+			ResteasyWebTarget target = client.target(targetString);
+			Response response = target.request().post(Entity.entity(aid, MediaType.APPLICATION_JSON));
 		}
 		
 		return null;
@@ -74,10 +102,12 @@ public class AgentController {
 		try {
 			//TODO Trebalo bi naci agenta preko JNDI-a
 			//Agent agent = (Agent)(new InitialContext().lookup("java:app/serverapp/"+names[1]));
+			AgentType agentType = new AgentType(className, "idk");
+			AID aid = new AID(agentName, host, agentType);
+			
 			String thisNode = prop.getProperty("NAME_OF_NODE");
 			if(thisNode.equals(host.getName())) {
-				AgentType agentType = new AgentType(className, "idk");
-				AID aid = new AID(agentName, host, agentType);
+				
 				Class[] classes = agentManager.getClassesFromManager("agentClasses");
 				Class agentClass = null;
 				for(Class c : classes) {
@@ -105,7 +135,11 @@ public class AgentController {
 				return agent;
 			
 			}else{
-				//TODO Poslati tom cvoru na kom je agent da ga napravi
+				ResteasyClient client = new ResteasyClientBuilder().build();
+				String targetString = "http://"+host.getAddress()+":"+host.getPort()+"/agentWeb/rest/agents/running/"+className+"/"+agentName;
+				ResteasyWebTarget target = client.target(targetString);
+				Response response = target.request().post(Entity.entity(host, MediaType.APPLICATION_JSON));
+				
 				return null;
 			}
 			

@@ -111,12 +111,7 @@ public class AgentManager implements AgentManagerLocal{
 		agentClasses.addAll(newAgentClasses);
 	}
 	
-	@Lock(LockType.WRITE)
-	public void addAgentToActiveList(Agent agent)
-	{
-		activeAgents.add(agent);
-		activeAgentsOnAllNodes.add(agent.getAid());
-	}
+	
 	
 	@Lock(LockType.WRITE)
 	public void addAgentToActiveListFromAnotherNoad(AID aid)
@@ -124,6 +119,11 @@ public class AgentManager implements AgentManagerLocal{
 		activeAgentsOnAllNodes.add(aid);
 	}
 	
+	@Lock(LockType.WRITE)
+	public void removeAgentToActiveListFromAnotherNoad(AID aid)
+	{
+		activeAgentsOnAllNodes.remove(aid);
+	}
 	
 	@Override
 	public void getAgentClassesAndTellOthersAboutNewOnes(Host host) {
@@ -181,17 +181,24 @@ public class AgentManager implements AgentManagerLocal{
 		}
 	}
 	
-	@Override
-	public Class[] getClassesFromManager(String packageName) {
-		try {
-			return getClasses(packageName);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
+	@Lock(LockType.WRITE)
+	public void addAgentToActiveList(Agent agent)
+	{
+		activeAgents.add(agent);
+		activeAgentsOnAllNodes.add(agent.getAid());
+		
+		// Sad bih trebao da kazem i svim ostalim hostovima da sam dosao tog agenta
+		List<Host> hosts = clusterManager.getAllHost();
+		for(Host host : hosts) {
+			if(prop.getProperty("NAME_OF_NODE").equals(host.getName()))
+				continue;
+			ResteasyClient client = new ResteasyClientBuilder().build();
+			String targetString = "http://"+host.getAddress()+":"+host.getPort()+"/agentWeb/rest/agents/tellAboutNewAgent";
+			ResteasyWebTarget target = client.target(targetString);
+			Response response = target.request().post(Entity.entity(agent.getAid(), MediaType.APPLICATION_JSON));
 		}
-		return null;
 	}
-	
+
 	@Override
 	@Lock(LockType.WRITE)
 	public Agent deleteRunningAgent(AID aid) {
@@ -207,10 +214,31 @@ public class AgentManager implements AgentManagerLocal{
 		activeAgents.remove(agentToRemove);
 		activeAgentsOnAllNodes.remove(aid);
 		
+		// Sad bih trebao da kazem i svim ostalim hostovima da sam dosao tog agenta
+		List<Host> hosts = clusterManager.getAllHost();
+		for(Host host : hosts) {
+			if(prop.getProperty("NAME_OF_NODE").equals(host.getName()))
+				continue;
+			ResteasyClient client = new ResteasyClientBuilder().build();
+			String targetString = "http://"+host.getAddress()+":"+host.getPort()+"/agentWeb/rest/agents/tellAboutStopedAgent";
+			ResteasyWebTarget target = client.target(targetString);
+			Response response = target.request().post(Entity.entity(aid, MediaType.APPLICATION_JSON));
+		}
+				
 		return agentToRemove;
 	}
 	
 	
+	@Override
+	public Class[] getClassesFromManager(String packageName) {
+		try {
+			return getClasses(packageName);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 	
 	
 	 /**
