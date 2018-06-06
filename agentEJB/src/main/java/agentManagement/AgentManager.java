@@ -153,6 +153,18 @@ public class AgentManager implements AgentManagerLocal{
 		agentClasses.addAll(newClasses);
 
 		// TODO Javi to na webSocket
+		
+		JMSMessageToWebSocket message = new JMSMessageToWebSocket();
+		message.setType(JMSMessageToWebSocketType.AGENT_CLASSES);
+		message.setContent(agentClasses);
+		try {
+			ObjectMessage objectMessage = context.createObjectMessage();
+			objectMessage.setObject(message);
+			JMSProducer producer = context.createProducer();
+			producer.send(destination, objectMessage);
+		} catch (JMSException e) {
+			e.printStackTrace();
+		}
 
 	}
 	
@@ -239,7 +251,8 @@ public class AgentManager implements AgentManagerLocal{
 			return;
 		
 		// Sada treba sebi (masteru) da dodam nove klase i da prodjem kroz ostale hostove i da njima dodam nove klase
-		agentClasses.addAll(newClasses);
+		//agentClasses.addAll(newClasses);
+		addAgentClasses(newClasses);
 		
 		List<Host> hosts = clusterManager.getAllHost();
 		for(Host h :hosts){

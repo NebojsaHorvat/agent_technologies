@@ -201,25 +201,18 @@ public class UserWebSocket implements MessageListener {
 						s.getBasicRemote().sendText(wsmJSON);
 				}
 			}
-//			if (message.getType() == JMSMessageToWebSocketType.LOGIN_FAILURE) {
-//				System.out.println("Neuspesno logovanje");
-//				String json = (String) message.getContent();
-//				System.out.println(json);
-//				ObjectMapper mapper = new ObjectMapper();
-//				UserAuthResMsg userAuthResMsg = mapper.readValue(json, UserAuthResMsg.class);
-//				String id = userAuthResMsg.getSessionId();
-//				WebSocketMessage wsm = new WebSocketMessage();
-//				wsm.setType(WebSocketMessageType.LOGIN_FAILURE);
-//				String wsmJSON = mapper.writeValueAsString(wsm);
-//				System.out.println(wsmJSON);
-//				Session session = null;
-//				for (Session s : sessions) {
-//					if (s.getId().equals(id)) {
-//						session = s;
-//					}
-//				}
-//				session.getBasicRemote().sendText(wsmJSON);
-//			}
+			else if(message.getType() == JMSMessageToWebSocketType.AGENT_CLASSES ) {
+				List<AgentClass> agentClasses = (List<AgentClass>) message.getContent();
+				ObjectMapper mapper = new ObjectMapper();
+				WebSocketMessage wsm = new WebSocketMessage();
+				wsm.setType(WebSocketMessageType.AGENT_CLASSES);
+				String content = mapper.writeValueAsString(agentClasses);
+				wsm.setContent(content);
+				String wsmJSON = mapper.writeValueAsString(wsm);
+				for (Session s : sessions) {
+						s.getBasicRemote().sendText(wsmJSON);
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
