@@ -20,11 +20,13 @@ angular.module('agent_list')
 			$scope.$on('agentClassesForRemoval', function (event, arg) { 
 				
 				$rootScope.agentClasses = $rootScope.agentClasses.filter(function(el){
+					var ret = true;
 					arg.forEach(function(element) {
-						  if(el.agentClass == el.agentClass)
-							  return false;
+						  if(el.agentClass == element.agentClass)
+							  ret = false;
+						  	  return;
 					});
-					return true;
+					return ret;
 				});
 				$scope.$apply();
 			  });

@@ -1,5 +1,6 @@
 package cluster;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -31,6 +32,7 @@ public class HeartBeat {
 		List<Host> hosts = clusterManager.getAllHost();
 		
 		String nameOfThisNode = prop.getProperty("NAME_OF_NODE");
+		List<Host> hostsToDelete = new ArrayList<Host>();
 		for(Host host :hosts) {
 			
 			if(nameOfThisNode.equals(host.getName()))
@@ -49,19 +51,21 @@ public class HeartBeat {
 
 			}catch(Exception e) {
 				tellAllHostsThatHostIsDead(hosts,host,nameOfThisNode);
+				hostsToDelete.add(host);
 			}
-			
 		}
+		for(Host h : hostsToDelete)
+			clusterManager.removeHostFromActiveList(h);
 	}
 
 	private void tellAllHostsThatHostIsDead(List<Host> hosts, Host hostToDelete,String nameOfThisNode) {
 		// Izbacim ga iz liste hostova kojima treba da posljem da je host umro
-		hosts.remove(hostToDelete);
+		//hosts.remove(hostToDelete);
 		// Izbacim ga i iz liste hostova na nodu koji je skontao da je on umro i onda sam sebi ne posaljem delete
 		clusterManager.removeHostFromActiveListAndDeleteHisStuff(hostToDelete);
 		
 		for(Host host :hosts) {
-			if(nameOfThisNode.equals(host.getName()))
+			if(nameOfThisNode.equals(host.getName()) || hostToDelete.equals(host))
 				continue;
 			
 			ResteasyClient client = new ResteasyClientBuilder().build();

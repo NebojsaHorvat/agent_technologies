@@ -113,8 +113,9 @@ public class ClusterManager implements ClusterManagerLocal{
 		for(Host h : activeHosts) {
 			if( h.getName().equals(host.getName())) {
 				hostForRemoval = h;
+				break;
 			}
-			break;
+			
 		}
 		
 		if(host != null)
@@ -145,7 +146,7 @@ public class ClusterManager implements ClusterManagerLocal{
 	@Override
 	@Lock(LockType.WRITE)
 	public void removeHostFromActiveListAndDeleteHisStuff(Host hostToDelete) {
-		activeHosts.remove(hostToDelete);
+		// activeHosts.remove(hostToDelete);
 		
 		List<AID> activeAgentsOnAllNodes = agentManager.getActiveAgentsOnAllNodes();
 		List<AID> activeAgentsForRemoval = new ArrayList<>();
