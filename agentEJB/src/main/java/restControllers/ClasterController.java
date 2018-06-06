@@ -55,7 +55,8 @@ public class ClasterController {
 		         public void run() {
 		        	 clusterManager.tellAllNodesAboutNewNode(host);
 		 			
-		 			agentManager.getAgentClassesAndTellOthersAboutNewOnes(host);
+		 			 agentManager.getAgentClassesAndTellOthersAboutNewOnes(host);
+		 			 
 		         }
 		      }.start();
 		}
