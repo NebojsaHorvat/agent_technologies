@@ -1,6 +1,8 @@
 package agentUtilities;
 
-public class AgentClass {
+import java.io.Serializable;
+
+public class AgentClass implements Serializable{
 
 	String agentClass;
 	

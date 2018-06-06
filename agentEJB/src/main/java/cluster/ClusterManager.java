@@ -122,6 +122,7 @@ public class ClusterManager implements ClusterManagerLocal{
 	}
 
 	@Override
+	@Lock(LockType.READ)
 	public List<Host> getAllHost() {
 		return activeHosts;
 	}
@@ -131,7 +132,7 @@ public class ClusterManager implements ClusterManagerLocal{
 		
 		for(Host h :activeHosts){
 			
-			if(host.getName().equals(h.getName()))
+			if(host.getName().equals(h.getName()) || prop.getProperty("NAME_OF_NODE").equals(h.getName()))
 				continue;
 			ResteasyClient client = new ResteasyClientBuilder().build();
 			String targetString = "http://"+h.getAddress()+":"+h.getPort()+"/agentWeb/rest/cluster/addHost";
@@ -142,6 +143,7 @@ public class ClusterManager implements ClusterManagerLocal{
 	}
 
 	@Override
+	@Lock(LockType.WRITE)
 	public void removeHostFromActiveListAndDeleteHisStuff(Host hostToDelete) {
 		activeHosts.remove(hostToDelete);
 		

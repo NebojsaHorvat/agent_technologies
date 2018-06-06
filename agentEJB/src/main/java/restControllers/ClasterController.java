@@ -38,12 +38,13 @@ public class ClasterController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public NewAgentInfo addHost(Host host) {
 		
-		// I da jesan i da nisam master ja dodajem novi cvor u listu svojih cvorova
+		// Proveravam da li taj host vec postoji
 		List<Host> hosts = clusterManager.getAllHost();
 		for(Host h : hosts) {
 			if(h.getName().equals(host.getName()))
 				return new NewAgentInfo(clusterManager.getAllHost(), agentManager.getAgentClasses(), agentManager.getActiveAgentsOnAllNodes());
 		}
+		// I da jesan i da nisam master ja dodajem novi cvor u listu svojih cvorova
 		clusterManager.addHostToActiveList(host);
 		
 		// Ovde spakujem sve informacije koje su potrebne novom agentu master ih odma posalje cim se novi agent prijavi

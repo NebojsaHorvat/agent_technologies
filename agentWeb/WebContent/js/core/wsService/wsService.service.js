@@ -20,9 +20,8 @@ angular.module('core.wsService')
 				   this.payload = JSON.parse(message.data);
 				   this.contentObjest = JSON.parse(this.payload.content);
 				   
-				   if(this.payload.type == 'LOGIN_SUCCESS'){
-					   $rootScope.user = this.contentObjest;
-					   $state.go('home.chat');
+				   if(this.payload.type == 'AGENT_CLASSES_REMOVAL'){
+					   $rootScope.$broadcast('agentClassesForRemoval',this.contentObjest );
 				   }
 				   else if(this.payload.type == 'AGENT_CLASSES'){
 					   $rootScope.$broadcast('agentClasses',this.contentObjest );

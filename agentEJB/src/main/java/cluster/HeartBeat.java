@@ -25,7 +25,7 @@ public class HeartBeat {
 	@EJB
 	private PropertiesSupplierLocal prop;
 	
-	@Schedule(hour = "*", minute = "*/2")
+	@Schedule(hour = "*", minute = "*/1")
 	public void doHeartBeat() {
 		
 		List<Host> hosts = clusterManager.getAllHost();

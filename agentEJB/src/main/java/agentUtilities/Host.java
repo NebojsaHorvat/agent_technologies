@@ -1,6 +1,8 @@
 package agentUtilities;
 
-public class Host {
+import java.io.Serializable;
+
+public class Host implements Serializable{
 
 	private String address;
 	

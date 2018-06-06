@@ -17,6 +17,18 @@ angular.module('agent_list')
 				$scope.$apply();
 			  });
 			
+			$scope.$on('agentClassesForRemoval', function (event, arg) { 
+				
+				$rootScope.agentClasses = $rootScope.agentClasses.filter(function(el){
+					arg.forEach(function(element) {
+						  if(el.agentClass == el.agentClass)
+							  return false;
+					});
+					return true;
+				});
+				$scope.$apply();
+			  });
+
 			this.send = (agentClass) =>{
 				agentService.activateAgent(agentClass.agentClass,this.agentName,agentClass.host)
 				.then( (response) => {

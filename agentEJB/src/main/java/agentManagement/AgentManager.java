@@ -9,12 +9,18 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.ejb.DependsOn;
+import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import javax.inject.Inject;
+import javax.jms.Destination;
+import javax.jms.JMSContext;
+import javax.jms.JMSException;
+import javax.jms.JMSProducer;
+import javax.jms.ObjectMessage;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -22,10 +28,7 @@ import javax.ws.rs.core.Response;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.jboss.security.auth.spi.Users;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import agentUtilities.AID;
@@ -35,11 +38,20 @@ import agentUtilities.AgentClasses;
 import agentUtilities.Host;
 import cluster.ClusterManagerLocal;
 import config.PropertiesSupplierLocal;
+import jmsMessage.JMSMessageToWebSocket;
+import jmsMessage.JMSMessageToWebSocketType;
+
 
 @Startup
 @Singleton
 public class AgentManager implements AgentManagerLocal{
 	
+	
+	@Resource(mappedName = "java:/jms/queue/wsQueue")
+	private Destination destination;
+	
+	@Inject
+	private JMSContext context;
 	
 	@EJB
 	private PropertiesSupplierLocal prop;
@@ -120,7 +132,6 @@ public class AgentManager implements AgentManagerLocal{
 	@Lock(LockType.WRITE)
 	public void addAgentClasses(List<AgentClass> newAgentClasses)
 	{
-		//agentClasses.addAll(newAgentClasses);
 		ArrayList<AgentClass> newClasses = new ArrayList<>();
 		for(AgentClass acNew: newAgentClasses) {
 			boolean found = false;
@@ -151,6 +162,17 @@ public class AgentManager implements AgentManagerLocal{
 		agentClasses.removeAll(agentClassesForRemoval);
 		
 		// TODO Javi to na webSocket
+		JMSMessageToWebSocket message = new JMSMessageToWebSocket();
+		message.setType(JMSMessageToWebSocketType.AGENT_CLASSES_REMOVAL);
+		message.setContent(agentClassesForRemoval);
+		try {
+			ObjectMessage objectMessage = context.createObjectMessage();
+			objectMessage.setObject(message);
+			JMSProducer producer = context.createProducer();
+			producer.send(destination, objectMessage);
+		} catch (JMSException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	
@@ -221,8 +243,8 @@ public class AgentManager implements AgentManagerLocal{
 		
 		List<Host> hosts = clusterManager.getAllHost();
 		for(Host h :hosts){
-			if(h.getName().equals(host.getName()))
-				continue;
+			if(h.getName().equals(host.getName()) || prop.getProperty("NAME_OF_NODE").equals(h.getName()))
+				continue; 
 			targetString = "http://"+h.getAddress()+":"+h.getPort()+"/agentWeb/rest/agents/classes";
 			target = client.target(targetString);
 			response = target.request().post(Entity.entity(newClasses, MediaType.APPLICATION_JSON));

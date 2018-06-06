@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import agentManagement.AgentManagerLocal;
 import agentUtilities.AgentClass;
 import jmsMessage.JMSMessageToWebSocket;
+import jmsMessage.JMSMessageToWebSocketType;
 import jmsMessage.WebSocketMessage;
 import jmsMessage.WebSocketMessageType;
 
@@ -111,14 +112,9 @@ public class UserWebSocket implements MessageListener {
 			ObjectMapper mapper = new ObjectMapper();
 			webSocketMessage = mapper.readValue(msg, WebSocketMessage.class);
 
-			if (webSocketMessage.getType() == WebSocketMessageType.LOGIN) {
-				handleLoginMessage(session, webSocketMessage.getContent());
-			} else if (webSocketMessage.getType() == WebSocketMessageType.MESSAGE) {
+			if (webSocketMessage.getType() == WebSocketMessageType.MESSAGE) {
 				handleSendMessage(session, webSocketMessage.getContent());	
-			} else if (webSocketMessage.getType() == WebSocketMessageType.LOGOUT) {
-				handleLogOut(session);
-			} else if (webSocketMessage.getType() == WebSocketMessageType.REGISTER) {
-				handleRegister(session, webSocketMessage.getContent());
+
 			} else if (webSocketMessage.getType() == WebSocketMessageType.AGENT_CLASSES) {
 				handleAgentClasses(session, webSocketMessage.getContent());
 			}
@@ -186,47 +182,6 @@ public class UserWebSocket implements MessageListener {
 	}
 
 
-	
-	
-	private void handleRegister(Session session, String content) {
-//		User user = null;
-//		try {
-//
-//			ObjectMapper mapper = new ObjectMapper();
-//			user = mapper.readValue(content, User.class);
-//			log.info(user.getUsername());
-//
-//			UserAuthReqMsg userAuthMsg = new UserAuthReqMsg(user, session.getId(), null, UserAuthReqMsgType.LOGIN);
-//			userAppCommunication.register(userAuthMsg);
-//
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-	}
-	
-	private void handleLoginMessage(Session session, String msg) {
-//		User user = null;
-//		try {
-//
-//			ObjectMapper mapper = new ObjectMapper();
-//			user = mapper.readValue(msg, User.class);
-//			log.info(user.getUsername());
-//
-//			UserAuthReqMsg userAuthMsg = new UserAuthReqMsg(user, session.getId(), null, UserAuthReqMsgType.LOGIN);
-//			userAppCommunication.sendAuthAttempt(userAuthMsg);
-//
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-	}
-
-
-	private void handleLogOut(Session session) {
-//		String username = sessionUser.get(session.getId());
-//		System.out.println(username);
-//		userAppCommunication.logoutAttempt(username);
-	}
-
 	@Override
 	public void onMessage(javax.jms.Message arg0) {
 		System.out.println("Stigla poruka");
@@ -234,10 +189,18 @@ public class UserWebSocket implements MessageListener {
 		try {
 			JMSMessageToWebSocket message = (JMSMessageToWebSocket) objectMessage.getObject();
 
-//			if (message.getType() == JMSMessageToWebSocketType.PUSH_MESSAGE) {
-//				MessageReqMsg_JMS messageReqMsg_JMS = (MessageReqMsg_JMS) message.getContent();
-//				pushMessageToClient(messageReqMsg_JMS);
-//			}
+			if (message.getType() == JMSMessageToWebSocketType.AGENT_CLASSES_REMOVAL) {
+				List<AgentClass> agentClassesForRemoval = (List<AgentClass>) message.getContent();
+				ObjectMapper mapper = new ObjectMapper();
+				WebSocketMessage wsm = new WebSocketMessage();
+				wsm.setType(WebSocketMessageType.AGENT_CLASSES_REMOVAL);
+				String content = mapper.writeValueAsString(agentClassesForRemoval);
+				wsm.setContent(content);
+				String wsmJSON = mapper.writeValueAsString(wsm);
+				for (Session s : sessions) {
+						s.getBasicRemote().sendText(wsmJSON);
+				}
+			}
 //			if (message.getType() == JMSMessageToWebSocketType.LOGIN_FAILURE) {
 //				System.out.println("Neuspesno logovanje");
 //				String json = (String) message.getContent();
