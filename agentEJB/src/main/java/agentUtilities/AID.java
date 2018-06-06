@@ -1,6 +1,8 @@
 package agentUtilities;
 
-public class AID {
+import java.io.Serializable;
+
+public class AID implements Serializable{
 
 	private String name;
 	

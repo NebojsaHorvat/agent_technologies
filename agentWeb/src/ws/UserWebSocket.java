@@ -23,6 +23,7 @@ import javax.websocket.server.ServerEndpoint;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import agentManagement.AgentManagerLocal;
+import agentUtilities.AID;
 import agentUtilities.AgentClass;
 import jmsMessage.JMSMessageToWebSocket;
 import jmsMessage.JMSMessageToWebSocketType;
@@ -207,6 +208,30 @@ public class UserWebSocket implements MessageListener {
 				WebSocketMessage wsm = new WebSocketMessage();
 				wsm.setType(WebSocketMessageType.AGENT_CLASSES);
 				String content = mapper.writeValueAsString(agentClasses);
+				wsm.setContent(content);
+				String wsmJSON = mapper.writeValueAsString(wsm);
+				for (Session s : sessions) {
+						s.getBasicRemote().sendText(wsmJSON);
+				}
+			}
+			else if(message.getType() == JMSMessageToWebSocketType.ACTIVE_AGENT ) {
+				AID activeAgent = (AID) message.getContent();
+				ObjectMapper mapper = new ObjectMapper();
+				WebSocketMessage wsm = new WebSocketMessage();
+				wsm.setType(WebSocketMessageType.ACTIVE_AGENT);
+				String content = mapper.writeValueAsString(activeAgent);
+				wsm.setContent(content);
+				String wsmJSON = mapper.writeValueAsString(wsm);
+				for (Session s : sessions) {
+						s.getBasicRemote().sendText(wsmJSON);
+				}
+			}
+			else if(message.getType() == JMSMessageToWebSocketType.ACTIVE_AGENTS_REMOVAL ) {
+				List<AID> activeAgent = (List<AID>) message.getContent();
+				ObjectMapper mapper = new ObjectMapper();
+				WebSocketMessage wsm = new WebSocketMessage();
+				wsm.setType(WebSocketMessageType.ACTIVE_AGENTS_REMOVAL);
+				String content = mapper.writeValueAsString(activeAgent);
 				wsm.setContent(content);
 				String wsmJSON = mapper.writeValueAsString(wsm);
 				for (Session s : sessions) {

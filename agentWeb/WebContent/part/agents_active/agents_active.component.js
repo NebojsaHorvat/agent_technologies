@@ -11,16 +11,25 @@ angular.module('agents_active')
 			}, () => {
 				$rootScope.activeAgents = null;
 			});
-			 
-//			$rootScope.agentClasses = [];
+			 		
+			$scope.$on('activeAgent', function (event, arg) { 
+				
+				$rootScope.activeAgents.push(arg);
+				$scope.$apply();
+			  });
 			
-//			$scope.$on('agentClasses', function (event, arg) { 
-//				
-//				$rootScope.agentClasses = arg.filter(function(el){
-//					return !el.agentClass.includes("Local");
-//				});
-//				$scope.$apply();
-//			  });
+			$scope.$on('activeAgentForRemoval', function (event, arg) { 	
+				$rootScope.activeAgents = $rootScope.activeAgents.filter(function(el){
+					var ret = true;
+					arg.forEach(function(element) {
+						  if(el.name == element.name && el.host.name == element.host.name)
+							  ret = false;
+						  	  return;
+					});
+					return ret;
+				});
+				$scope.$apply();
+			  });
 			
 			this.stopAgent = (aid) =>{ 
 				agentService.stopAgent(aid)

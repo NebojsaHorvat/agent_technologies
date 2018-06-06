@@ -26,6 +26,12 @@ angular.module('core.wsService')
 				   else if(this.payload.type == 'AGENT_CLASSES'){
 					   $rootScope.$broadcast('agentClasses',this.contentObjest );
 				   }
+				   else if(this.payload.type == 'ACTIVE_AGENT'){
+					   $rootScope.$broadcast('activeAgent',this.contentObjest );
+				   }
+				   else if(this.payload.type == 'ACTIVE_AGENTS_REMOVAL'){
+					   $rootScope.$broadcast('activeAgentForRemoval',this.contentObjest );
+				   }
 				   else if(this.payload.type == 'MESSAGE'){
 					   $rootScope.$broadcast('MESSAGE',this.contentObjest );
 				   }else if(this.payload.type == 'LOGOUT'){
