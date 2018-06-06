@@ -26,6 +26,7 @@ import agentUtilities.AID;
 import agentUtilities.AgentClass;
 import agentUtilities.Host;
 import agentUtilities.Hosts;
+import agentUtilities.NewAgentInfo;
 import config.PropertiesSupplierLocal;
 
 @ConcurrencyManagement(ConcurrencyManagementType.CONTAINER)
@@ -68,9 +69,11 @@ public class ClusterManager implements ClusterManagerLocal{
 		ResteasyWebTarget target = client.target(targetString);
 		Response response = target.request().post(Entity.entity(host, MediaType.APPLICATION_JSON));
 		
-		// I posto sam prosao IF i ja nisam master onda cu dobiti od mastera nazad listu svih hostova
-		Hosts hosts = response.readEntity(Hosts.class);
-		activeHosts = hosts.getListOfHosts();
+		// I posto sam prosao IF i ja nisam master onda cu dobiti od mastera nazad liste svih hostova,klasa i aktivnih agenata
+		NewAgentInfo newAgentInfo = response.readEntity(NewAgentInfo.class);
+		activeHosts = newAgentInfo.getListOfHosts();
+		agentManager.addActiveAgentOnAllNodes(newAgentInfo.getActiveAgentsOnAllNodes());
+		agentManager.addAgentClasses(newAgentInfo.getAgentClasses());
 		
 		}catch(Exception e) {
 			e.printStackTrace();

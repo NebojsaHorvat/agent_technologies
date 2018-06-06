@@ -106,10 +106,41 @@ public class AgentManager implements AgentManagerLocal{
 	}
 	
 	@Lock(LockType.WRITE)
+	public void addActiveAgentOnAllNodes(List<AID> newActiveAgents)
+	{
+		activeAgentsOnAllNodes.addAll(newActiveAgents);
+		for(AID newActiveAgent : newActiveAgents) {
+			if(activeAgentsOnAllNodes.contains(newActiveAgent))
+				continue;
+			activeAgentsOnAllNodes.add(newActiveAgent);
+		}
+	}
+	
+	
+	@Lock(LockType.WRITE)
 	public void addAgentClasses(List<AgentClass> newAgentClasses)
 	{
-		agentClasses.addAll(newAgentClasses);
+		//agentClasses.addAll(newAgentClasses);
+		ArrayList<AgentClass> newClasses = new ArrayList<>();
+		for(AgentClass acNew: newAgentClasses) {
+			boolean found = false;
+			AgentClass forAdding = null;
+			for(AgentClass acOld: agentClasses) {
+				if( acNew.getAgentClass().equals( acOld.getAgentClass())  ){
+					found = true;
+					forAdding = acNew;
+					break;
+				}
+			}
+			if(found == false) {
+				newClasses.add(acNew);
+			}
+		}
 		
+		if(newClasses.isEmpty())
+			return;
+		agentClasses.addAll(newClasses);
+
 		// TODO Javi to na webSocket
 
 	}

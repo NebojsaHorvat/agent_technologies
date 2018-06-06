@@ -7,9 +7,9 @@ import agentUtilities.AgentType;
 
 public class ContractnetAgent extends Agent implements ContractnetLocal{
 
-	ContractnetAgent () {}
+	public ContractnetAgent () {}
 	
-	ContractnetAgent (AID aid, AgentType agentType) {
+	public ContractnetAgent (AID aid, AgentType agentType) {
 		super(aid,agentType);
 	}
 	
