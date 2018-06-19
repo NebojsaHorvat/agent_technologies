@@ -30,24 +30,6 @@ import jmsMessage.JMSMessageToWebSocketType;
 import jmsMessage.WebSocketMessage;
 import jmsMessage.WebSocketMessageType;
 
-//import cluster.UserClusterManagerLocal;
-//import ejb_beans.ChatAppCommunicationLocal;
-//import ejb_beans.UserAppCommunicationLocal;
-//import jms_messages.JMSMessageToWebSocket;
-//import jms_messages.JMSMessageToWebSocketType;
-//import jms_messages.LastChatsResMsg;
-//import jms_messages.MessageReqMsg;
-//import jms_messages.MessageReqMsg_JMS;
-//import jms_messages.UserAuthReqMsg;
-//import jms_messages.UserAuthReqMsgType;
-//import jms_messages.UserAuthResMsg;
-//import jms_messages.UserAuthResMsgType;
-//import jms_messages.UserFriendsReqMsg;
-//import jms_messages.UserFriendsResMsg;
-//import jms_messages.UserFriendsReqMsgType;
-//import jms_messages.UserFriendsResMsgType;
-//import model.User;
-
 @ServerEndpoint("/Socket")
 @MessageDriven(activationConfig = {
 		@ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
@@ -60,15 +42,6 @@ public class UserWebSocket implements MessageListener {
 	private static Map<String, String> sessionUser = new HashMap<>();
 
 	private static ArrayList<Session> sessions = new ArrayList<>();
-
-//	@EJB
-//	UserAppCommunicationLocal userAppCommunication;
-//
-//	@EJB
-//	ChatAppCommunicationLocal chatAppCommunication;
-//
-//	@EJB
-//	private UserClusterManagerLocal userClusterManager;
 
 	@EJB
 	private AgentManagerLocal agentManager;
