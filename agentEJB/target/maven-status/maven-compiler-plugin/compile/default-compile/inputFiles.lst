@@ -3,6 +3,7 @@
 /home/ilija/Desktop/Agenti/faza2/agent_technologies/agentEJB/src/main/java/cluster/ClusterManager.java
 /home/ilija/Desktop/Agenti/faza2/agent_technologies/agentEJB/src/main/java/agentClasses/PingAgent.java
 /home/ilija/Desktop/Agenti/faza2/agent_technologies/agentEJB/src/main/java/jmsMessage/WebSocketMessageType.java
+/home/ilija/Desktop/Agenti/faza2/agent_technologies/agentEJB/src/main/java/restControllers/MessageController.java
 /home/ilija/Desktop/Agenti/faza2/agent_technologies/agentEJB/src/main/java/cluster/HeartBeat.java
 /home/ilija/Desktop/Agenti/faza2/agent_technologies/agentEJB/src/main/java/agentClasses/ContractnetLocal.java
 /home/ilija/Desktop/Agenti/faza2/agent_technologies/agentEJB/src/main/java/cluster/ClusterManagerLocal.java
@@ -16,6 +17,7 @@
 /home/ilija/Desktop/Agenti/faza2/agent_technologies/agentEJB/src/main/java/aclMessage/ACLMessage.java
 /home/ilija/Desktop/Agenti/faza2/agent_technologies/agentEJB/src/main/java/agentManagement/AgentManager.java
 /home/ilija/Desktop/Agenti/faza2/agent_technologies/agentEJB/src/main/java/agentUtilities/AgentClass.java
+/home/ilija/Desktop/Agenti/faza2/agent_technologies/agentEJB/src/main/java/aclMessage/Performative.java
 /home/ilija/Desktop/Agenti/faza2/agent_technologies/agentEJB/src/main/java/agentUtilities/RunningAgents.java
 /home/ilija/Desktop/Agenti/faza2/agent_technologies/agentEJB/src/main/java/restControllers/Test.java
 /home/ilija/Desktop/Agenti/faza2/agent_technologies/agentEJB/src/main/java/agentUtilities/AgentClasses.java
@@ -25,5 +27,6 @@
 /home/ilija/Desktop/Agenti/faza2/agent_technologies/agentEJB/src/main/java/agentUtilities/NewAgentInfo.java
 /home/ilija/Desktop/Agenti/faza2/agent_technologies/agentEJB/src/main/java/restControllers/ClasterController.java
 /home/ilija/Desktop/Agenti/faza2/agent_technologies/agentEJB/src/main/java/restControllers/AgentController.java
+/home/ilija/Desktop/Agenti/faza2/agent_technologies/agentEJB/src/main/java/aclMessage/MDBConsumer.java
 /home/ilija/Desktop/Agenti/faza2/agent_technologies/agentEJB/src/main/java/agentManagement/AgentManagerLocal.java
 /home/ilija/Desktop/Agenti/faza2/agent_technologies/agentEJB/src/main/java/agentClasses/PingLocal.java
