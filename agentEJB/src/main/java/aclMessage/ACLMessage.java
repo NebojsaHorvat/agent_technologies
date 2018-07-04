@@ -41,7 +41,7 @@ public class ACLMessage implements Serializable{
 	
 	private String inReplyTo;
 	
-	private String replyBy;
+	private Long replyBy;
 	
 	private Boolean forward;
 
@@ -172,11 +172,11 @@ public class ACLMessage implements Serializable{
 		this.inReplyTo = inReplyTo;
 	}
 
-	public String getReplyBy() {
+	public Long getReplyBy() {
 		return replyBy;
 	}
 
-	public void setReplyBy(String replyBy) {
+	public void setReplyBy(Long replyBy) {
 		this.replyBy = replyBy;
 	}
 	
