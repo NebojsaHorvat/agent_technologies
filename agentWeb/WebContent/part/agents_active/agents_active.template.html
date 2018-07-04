@@ -1,13 +1,39 @@
 <h2>Active Agents:</h2>
-<div class="row no-gutters align-items-left">
-	<div ng-repeat="aid in $root.activeAgents"
-		class="card m-md-1 col-lg-4 col-md-6">
-			<div class="card-body">
-				<h3 class="card-title">
-						<p>{{aid.name}}</p>
-						<p>Location: {{aid.host.name}}</p>
-						<button class='btn btn-custom' ng-click="$ctrl.stopAgent(aid)">Deactivate agent</button>
-				</h3>
-			</div>
+<div class="row align-items-left">
+	
+	
+	<div class="card">
+		<div class="card-body">
+			<form name="messageForm">
+				<select ng-model="$ctrl.sender" class="form-group form-control" required>
+					<option value="">---Sender---</option>
+					<option ng-repeat="aid in $root.activeAgents" value="{{aid}}">{{aid.name}}</option>
+				</select>
+				<select ng-model="$ctrl.receiver" class="form-group form-control" required>
+					<option value="">---Receiver---</option>
+					<option ng-repeat="aid in $root.activeAgents" value="{{aid}}">{{aid.name}}</option>
+				</select>
+				<select ng-model="$ctrl.message.performative" class="form-group form-control" required>
+					<option value="">---Performative---</option>
+					<option ng-repeat="per in $ctrl.performatives" value="{{per}}">{{per}}</option>
+				</select>
+				<input type="text" class="form-group form-control" placeholder="Content" ng-model="$ctrl.message.content" required/>
+				<input type="submit" value="Send" class="btn btn-custom" ng-click="messageForm.$valid && $ctrl.sendMessage()">
+			</form>
+		</div>
 	</div>
+	
+	<div class="card">
+		<div class="card-body">
+			<form name="deactivateForm">
+				<select ng-model="$ctrl.deactivate" class="form-group form-control" required>
+					<option value="">---Deactivate---</option>
+					<option ng-repeat="aid in $root.activeAgents" value="{{aid}}">{{aid.name}}</option>
+				</select>
+				<input type="submit" value="Deactivate" class="btn btn-custom" ng-click="deactivateForm.$valid && $ctrl.stopAgent($ctrl.deactivate)"/>
+			</form>
+		</div>
+	</div>
+
+	
 </div>

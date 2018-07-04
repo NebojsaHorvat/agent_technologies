@@ -28,6 +28,7 @@ import agentUtilities.AgentClass;
 import agentUtilities.AgentClasses;
 import agentUtilities.AgentType;
 import agentUtilities.Host;
+import agentUtilities.LogUtility;
 import agentUtilities.RunningAgents;
 import config.PropertiesSupplierLocal;
 
@@ -39,6 +40,8 @@ public class AgentController {
 	private AgentManagerLocal agentManager;
 	@EJB
 	private MessageManager msm;
+	@EJB
+	private LogUtility log;
 	
 	@EJB
 	private PropertiesSupplierLocal prop;
@@ -134,8 +137,8 @@ public class AgentController {
 				Constructor constructor = null;
 				Agent agent = null;
 				try {
-					constructor = agentClass.getDeclaredConstructor(AID.class,AgentType.class, MessageManager.class, AgentManagerLocal.class);
-					agent = (Agent)constructor.newInstance(aid,agentType, msm , agentManager);
+					constructor = agentClass.getDeclaredConstructor(AID.class,AgentType.class, MessageManager.class, AgentManagerLocal.class, LogUtility.class);
+					agent = (Agent)constructor.newInstance(aid,agentType, msm , agentManager, log);
 				}catch(Exception e) {
 					e.printStackTrace();
 				}

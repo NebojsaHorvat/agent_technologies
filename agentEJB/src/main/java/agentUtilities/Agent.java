@@ -16,15 +16,18 @@ public abstract class Agent {
 	protected MessageManager msm;
 	@EJB
 	protected AgentManagerLocal agm;
+	@EJB
+	protected LogUtility log;
 
 	public Agent() {}
 	
-	public Agent(AID aid, AgentType agentType,  MessageManager msm, AgentManagerLocal agm) {
+	public Agent(AID aid, AgentType agentType,  MessageManager msm, AgentManagerLocal agm, LogUtility log) {
 		super();
 		this.aid = aid;
 		this.agentType = agentType;
 		this.msm = msm;
 		this.agm = agm;
+		this.log = log;
 	}
 
 	public AID getAid() {

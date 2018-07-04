@@ -44,9 +44,10 @@ public class MDBConsumer implements MessageListener{
 					if(receiver != null)
 						hosts.add(receiver.getHost());
 				}
-				aclMessage.setForward(true);
+				
 				for(Host host : hosts) {
 					if(!host.getName().equals(prop.getProperty("NAME_OF_NODE"))) {
+						aclMessage.setForward(true);
 						ResteasyClient client = new ResteasyClientBuilder().build();
 						String targetString = "http://"+host.getAddress()+":"+host.getPort()+"/agentWeb/rest/messages";
 						ResteasyWebTarget target = client.target(targetString);

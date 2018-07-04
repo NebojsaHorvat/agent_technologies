@@ -1,5 +1,6 @@
 'use strict';
 
 angular.module('core', [
-	'core.agent'
+	'core.agent',
+	'core.message'
 ]);

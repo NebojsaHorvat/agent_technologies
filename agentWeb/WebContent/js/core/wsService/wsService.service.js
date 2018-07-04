@@ -27,10 +27,14 @@ angular.module('core.wsService')
 					   $rootScope.$broadcast('agentClasses',this.contentObjest );
 				   }
 				   else if(this.payload.type == 'ACTIVE_AGENT'){
+					   $rootScope.$broadcast("LOG", "ADD: " + this.payload.content);
 					   $rootScope.$broadcast('activeAgent',this.contentObjest );
 				   }
 				   else if(this.payload.type == 'ACTIVE_AGENTS_REMOVAL'){
+					   $rootScope.$broadcast("LOG", "REMOVE: " + this.payload.content);
 					   $rootScope.$broadcast('activeAgentForRemoval',this.contentObjest );
+				   } else if(this.payload.type == 'LOG'){
+					   $rootScope.$broadcast("LOG", "LOG:" + this.payload.content);
 				   }
 				   else if(this.payload.type == 'MESSAGE'){
 					   $rootScope.$broadcast('MESSAGE',this.contentObjest );
@@ -44,7 +48,7 @@ angular.module('core.wsService')
 					   $rootScope.$broadcast(this.payload.type, this.contentObjest);
 				   }
 				   
-				   alert(message.data);
+				   //alert(message.data);
 			   }
 			   
 			   socket.onclose = function() {

@@ -2,5 +2,6 @@
 
 angular.module('agents_active', [
 	'ui.router',
-	'core.agent'
+	'core.agent',
+	'core.message'
 ]);
