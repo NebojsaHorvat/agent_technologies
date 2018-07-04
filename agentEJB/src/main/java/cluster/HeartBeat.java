@@ -39,19 +39,22 @@ public class HeartBeat {
 				continue;
 			try {
 				ResteasyClient client = new ResteasyClientBuilder().build();
-				String targetString = "http://"+host.getAddress()+":"+host.getPort()+"/agentWeb/rest/cluster/node";
+				String targetString = "http://"+host.getAddress()+":"+host.getPort()+"/agentWeb/rest/clusterHB/node";
 				ResteasyWebTarget target = client.target(targetString);
 				Response response = target.request().get();
 				String ret = response.readEntity(String.class);
 				
 				if(ret.equals("alive"))
 					continue;
-				else
-					tellAllHostsThatHostIsDead(hosts,host,nameOfThisNode);
+//				else
+//					tellAllHostsThatHostIsDead(hosts,host,nameOfThisNode);
 
 			}catch(Exception e) {
-				tellAllHostsThatHostIsDead(hosts,host,nameOfThisNode);
-				hostsToDelete.add(host);
+				if( ! ( prop.getProperty("NAME_OF_NODE").equals(host.getName())  || host.getName().equals("master")   ) ) {
+					tellAllHostsThatHostIsDead(hosts,host,nameOfThisNode);
+					hostsToDelete.add(host);
+	
+				}
 			}
 		}
 		for(Host h : hostsToDelete)
@@ -71,7 +74,7 @@ public class HeartBeat {
 			ResteasyClient client = new ResteasyClientBuilder().build();
 			String targetString = "http://"+host.getAddress()+":"+host.getPort()+"/agentWeb/rest/cluster/node/delete";
 			ResteasyWebTarget target = client.target(targetString);
-			Response response = target.request().post(Entity.entity(host, MediaType.APPLICATION_JSON));
+			Response response = target.request().post(Entity.entity(hostToDelete, MediaType.APPLICATION_JSON));
 			
 		}
 		

@@ -31,8 +31,8 @@ angular.module('agent_list')
 				$scope.$apply();
 			  });
 
-			this.send = (agentClass) =>{
-				agentService.activateAgent(agentClass.agentClass,this.agentName,agentClass.host)
+			this.send = (agentClass,agentName) =>{
+				agentService.activateAgent(agentClass.agentClass,agentName,agentClass.host)
 				.then( (response) => {
 					alert('Agent added')
 				}, () => {
