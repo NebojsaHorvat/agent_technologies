@@ -305,7 +305,18 @@ public class AgentManager implements AgentManagerLocal{
 		}
 		
 		// TODO Javi to na webSocket
-
+		
+		JMSMessageToWebSocket message = new JMSMessageToWebSocket();
+		message.setType(JMSMessageToWebSocketType.ACTIVE_AGENT);
+		message.setContent(agent.getAid());
+		try {
+			ObjectMessage objectMessage = context.createObjectMessage();
+			objectMessage.setObject(message);
+			JMSProducer producer = context.createProducer();
+			producer.send(destination, objectMessage);
+		} catch (JMSException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -335,6 +346,19 @@ public class AgentManager implements AgentManagerLocal{
 		}
 		
 		// TODO Javi to na webSocket
+		List<AID> aids = new ArrayList<>();
+		aids.add(aid);
+		JMSMessageToWebSocket message = new JMSMessageToWebSocket();
+		message.setType(JMSMessageToWebSocketType.ACTIVE_AGENTS_REMOVAL);
+		message.setContent(aids);
+		try {
+			ObjectMessage objectMessage = context.createObjectMessage();
+			objectMessage.setObject(message);
+			JMSProducer producer = context.createProducer();
+			producer.send(destination, objectMessage);
+		} catch (JMSException e) {
+			e.printStackTrace();
+		}
 		
 		return agentToRemove;
 	}
