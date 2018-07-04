@@ -12,6 +12,7 @@ import agentManagement.AgentManagerLocal;
 import agentUtilities.AID;
 import agentUtilities.Agent;
 import agentUtilities.AgentType;
+import agentUtilities.LogUtility;
 import aiUtils.AIUtils;
 import weka.classifiers.Evaluation;
 import weka.classifiers.functions.LinearRegression;
@@ -32,23 +33,23 @@ public class RegressionAgent extends Agent {
 		// TODO Auto-generated constructor stub
 	}
 
-	public RegressionAgent(AID aid, AgentType agentType, MessageManager msm, AgentManagerLocal agm) {
-		super(aid, agentType, msm, agm);
+	public RegressionAgent(AID aid, AgentType agentType, MessageManager msm, AgentManagerLocal agm, LogUtility log) {
+		super(aid, agentType, msm, agm, log);
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void handleMessage(ACLMessage msg) {
+		log.log(msg);
 		if (msg.getPerformative() == Performative.REQUEST) {
 			try {
 				dataset = AIUtils.loadDataset(msg.getContent());
 				int trainSize = (int) Math.round(dataset.numInstances() * 0.8);
-		        int testSize = dataset.numInstances() - trainSize;
-		        dataset.randomize(new Random());
-		        trainDataSet = new Instances(dataset, 0, trainSize);
-		        testDataSet = new Instances(dataset, trainSize, testSize);
+				int testSize = dataset.numInstances() - trainSize;
+				dataset.randomize(new Random());
+				trainDataSet = new Instances(dataset, 0, trainSize);
+				testDataSet = new Instances(dataset, trainSize, testSize);
 				linearRegression = AIUtils.createLR(trainDataSet);
-				System.out.println(Arrays.toString(linearRegression.coefficients()));
 				ACLMessage newMessage = new ACLMessage(Performative.AGREE);
 				newMessage.setSender(this.getAid());
 				newMessage.setContent(Arrays.toString(linearRegression.coefficients()));
@@ -64,7 +65,6 @@ public class RegressionAgent extends Agent {
 			try {
 				evaluation = new Evaluation(testDataSet);
 				evaluation.evaluateModel(linearRegression, testDataSet);
-				System.out.println(evaluation.toSummaryString());
 				ACLMessage newMessage = new ACLMessage(Performative.AGREE);
 				newMessage.setSender(this.getAid());
 				newMessage.setContent(evaluation.toSummaryString());
@@ -92,7 +92,6 @@ public class RegressionAgent extends Agent {
 				}
 
 				double retVal = linearRegression.classifyInstance(instance);
-				System.out.println(retVal);
 				ACLMessage newMessage = new ACLMessage(Performative.AGREE);
 				newMessage.setSender(this.getAid());
 				newMessage.setContent(Double.toString(retVal));
