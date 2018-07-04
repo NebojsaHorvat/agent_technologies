@@ -12,7 +12,7 @@ public class AIUtils {
 			dataset = DataSource.read(path);
 			dataset.setClassIndex(dataset.numAttributes() - 1);
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException();
 		}
 		return dataset;
 	}
@@ -22,8 +22,7 @@ public class AIUtils {
 		try {
 			lr.buildClassifier(dataset);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException();
 		}
 		return lr;
 	}

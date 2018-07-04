@@ -31,6 +31,7 @@ public class MasterRegAgent extends Agent{
 		if(msg.getPerformative().equals(Performative.REQUEST)) {
 			String path = msg.getContent();
 			ACLMessage newMessage = new ACLMessage(Performative.REQUEST);
+			newMessage.setSender(this.getAid());
 			newMessage.setContent(path);
 			List<AID> aids = this.agm.getActiveAgentsOnAllNodes();
 			for(AID temp:aids) {
@@ -40,9 +41,30 @@ public class MasterRegAgent extends Agent{
 			}
 			msm.post(newMessage);
 		}else if(msg.getPerformative().equals(Performative.INFORM)) {
-			System.out.println("evaluacija rezultati");
+			ACLMessage newMessage = new ACLMessage(Performative.INFORM);
+			newMessage.setSender(this.getAid());
+			List<AID> aids = this.agm.getActiveAgentsOnAllNodes();
+			for(AID temp:aids) {
+				if(temp.getAgentType().getName().equals("agentClasses.RegressionAgent")) {
+					newMessage.getReceivers().add(temp);
+				}
+			}
+			msm.post(newMessage);
 		}else if(msg.getPerformative().equals(Performative.QUERY_IF)) {
-			System.out.println("na nekom novom primeru");
+			ACLMessage newMessage = new ACLMessage(Performative.QUERY_IF);
+			newMessage.setSender(this.getAid());
+			newMessage.setContent(msg.getContent());
+			List<AID> aids = this.agm.getActiveAgentsOnAllNodes();
+			for(AID temp:aids) {
+				if(temp.getAgentType().getName().equals("agentClasses.RegressionAgent")) {
+					newMessage.getReceivers().add(temp);
+				}
+			}
+			msm.post(newMessage);
+		}else if(msg.getPerformative().equals(Performative.AGREE)) {
+			System.out.println(msg.getContent());
+		}else if (msg.getPerformative().equals(Performative.NOT_UNDERSTOOD)) {
+			System.out.println("NOT_UNDERSTOOD");
 		}
 		
 	}
