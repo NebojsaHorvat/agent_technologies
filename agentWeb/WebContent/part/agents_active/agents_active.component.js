@@ -3,7 +3,7 @@
 angular.module('agents_active')
 	.component('myAgentsActive', {
 		templateUrl: 'part/agents_active/agents_active.template.html',
-		controller: function( $rootScope, $state,wsService,$scope,$element,agentService) {
+		controller: function( $rootScope, $state,wsService,$scope,$element,agentService,messageService) {
 			
 			agentService.getActiveAgents()
 			.then( (response) => {
@@ -31,6 +31,10 @@ angular.module('agents_active')
 				$scope.$apply();
 			  });
 			
+			messageService.getPerformatives().then( (response) => {
+				this.performatives = response.data;
+			});
+			
 			this.stopAgent = (aid) =>{ 
 				agentService.stopAgent(aid)
 				.then( (response) => {
@@ -43,5 +47,12 @@ angular.module('agents_active')
 				});
 				
 			}
+			
+			this.sendMessage = () => {
+				this.message.receivers = [];
+				this.message.receivers.push(JSON.parse(this.receiver));
+				this.message.sender = JSON.parse(this.sender);
+				messageService.sendMessage(this.message);
+			};
 		}
 	});		
