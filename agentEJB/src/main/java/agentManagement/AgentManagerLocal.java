@@ -37,5 +37,5 @@ public interface AgentManagerLocal {
 	
 	public void addActiveAgentOnAllNodes(List<AID> newActiveAgents);
 
-
+	public AID getAID(String agentName);
 }

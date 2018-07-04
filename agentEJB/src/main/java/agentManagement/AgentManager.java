@@ -403,6 +403,15 @@ public class AgentManager implements AgentManagerLocal{
 	    return classes;
 	}
 
+	@Override
+	public AID getAID(String agentName) {
+		for (AID aid : activeAgentsOnAllNodes) {
+			if(aid.getName().equals(agentName))
+				return aid;
+		}
+		return null;
+	}
+
 	
 
 	

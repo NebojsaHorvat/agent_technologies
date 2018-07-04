@@ -42,13 +42,23 @@ public class ACLMessage implements Serializable{
 	private String inReplyTo;
 	
 	private String replyBy;
+	
+	private Boolean forward;
 
 	public ACLMessage() {
 		super();
 		this.performative = Performative.NOT_UNDERSTOOD;
 		this.receivers = new ArrayList<>();
 		this.userArgs = new HashMap<>();
+		this.forward = false;
 	}
+	
+	public ACLMessage(Performative performative) {
+		this.performative = performative;
+		this.receivers = new ArrayList<>();
+		this.userArgs = new HashMap<>();
+		this.forward = false;
+	}	
 
 	public Performative getPerformative() {
 		return performative;
@@ -170,5 +180,11 @@ public class ACLMessage implements Serializable{
 		this.replyBy = replyBy;
 	}
 	
-	
+	public Boolean getForward() {
+		return forward;
+	}
+
+	public void setForward(Boolean forward) {
+		this.forward = forward;
+	}
 }
