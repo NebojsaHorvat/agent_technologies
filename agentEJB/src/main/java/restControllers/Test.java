@@ -1,29 +1,24 @@
 package restControllers;
 
-import java.io.File;
-import java.io.IOException;
-
-import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.Response;
 
-import org.jboss.resteasy.annotations.Form;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
+
+import weka.core.Instances;
+import weka.core.converters.ConverterUtils.DataSource;
 
 
 @LocalBean
@@ -35,6 +30,13 @@ public class Test {
 	@Path("/test")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String test(@Context HttpServletRequest request) {
+		try {
+			Instances dataset = DataSource.read("/home/ilija/Documents/regression-datasets/housing.arff");
+			dataset.setClassIndex(dataset.numAttributes()-1);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return "OK";
 	}
 
