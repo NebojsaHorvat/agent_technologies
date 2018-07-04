@@ -351,6 +351,15 @@ public class AgentManager implements AgentManagerLocal{
 		return null;
 	}
 	
+	@Override
+	public AID getAID(String agentName) {
+		for (AID aid : activeAgentsOnAllNodes) {
+			if(aid.getName().equals(agentName))
+				return aid;
+		}
+		return null;
+	}
+	
 	
 	 /**
 	 * Scans all classes accessible from the context class loader which belong to the given package and subpackages.
@@ -404,7 +413,7 @@ public class AgentManager implements AgentManagerLocal{
 	}
 
 	
-
+	
 	
 
 	

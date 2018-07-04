@@ -1,17 +1,30 @@
 package agentUtilities;
 
-public class Agent {
+import javax.ejb.EJB;
+
+import aclMessage.ACLMessage;
+import aclMessage.MessageManager;
+import agentManagement.AgentManagerLocal;
+
+public abstract class Agent {
 	
 	private AID aid;
 	
 	private AgentType agentType;
-
+	
+	@EJB
+	protected MessageManager msm;
+	@EJB
+	protected AgentManagerLocal agm;
+	
 	public Agent() {}
 	
-	public Agent(AID aid, AgentType agentType) {
+	public Agent(AID aid, AgentType agentType, MessageManager msm, AgentManagerLocal agm) {
 		super();
 		this.aid = aid;
 		this.agentType = agentType;
+		this.msm = msm;
+		this.agm = agm;
 	}
 
 	public AID getAid() {
@@ -29,5 +42,6 @@ public class Agent {
 	public void setAgentType(AgentType agentType) {
 		this.agentType = agentType;
 	}
-
+	
+	public abstract void handleMessage(ACLMessage aclMessage);
 }

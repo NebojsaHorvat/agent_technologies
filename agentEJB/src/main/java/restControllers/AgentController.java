@@ -20,6 +20,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
+import aclMessage.MessageManager;
 import agentManagement.AgentManagerLocal;
 import agentUtilities.AID;
 import agentUtilities.Agent;
@@ -36,6 +37,8 @@ public class AgentController {
 
 	@EJB
 	private AgentManagerLocal agentManager;
+	@EJB
+	private MessageManager msm;
 	
 	@EJB
 	private PropertiesSupplierLocal prop;
@@ -101,6 +104,12 @@ public class AgentController {
 	public Agent startAgent(@PathParam("className") String className,@PathParam("agentName") String agentName,Host host ) {
 		
 		String[] names = className.split("\\.");
+		
+		for (AID aid : agentManager.getActiveAgentsOnAllNodes()) {
+			if(aid.getName().equals(agentName))
+				return null;
+		}
+		
 		try {
 			//TODO Trebalo bi naci agenta preko JNDI-a
 			//Agent agent = (Agent)(new InitialContext().lookup("java:app/serverapp/"+names[1]));
@@ -125,8 +134,8 @@ public class AgentController {
 				Constructor constructor = null;
 				Agent agent = null;
 				try {
-					constructor = agentClass.getDeclaredConstructor(AID.class,AgentType.class);
-					agent = (Agent)constructor.newInstance(aid,agentType);
+					constructor = agentClass.getDeclaredConstructor(AID.class,AgentType.class, MessageManager.class, AgentManagerLocal.class);
+					agent = (Agent)constructor.newInstance(aid,agentType, msm, agentManager);
 				}catch(Exception e) {
 					e.printStackTrace();
 				}
