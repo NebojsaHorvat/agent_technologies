@@ -24,7 +24,6 @@ public class PongAgent extends Agent {
 			ACLMessage reply = new ACLMessage(Performative.INFORM);
 			reply.setSender(getAid());
 			reply.getReceivers().add(msg.getSender());
-			reply.getUserArgs().put("pongOn", getAid().getHost());
 			msm.post(reply);
 		}
 		

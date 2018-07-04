@@ -37,13 +37,7 @@ public class PingAgent extends Agent{
 			msm.post(msgToPong);
 		} else if (msg.getPerformative() == Performative.INFORM) {
 			ACLMessage msgFromPong = msg;
-			Map<String, Object> args = new HashMap<>(msg.getUserArgs());
-			args.put("pingOn", getAid().getHost());
-
-			System.out.println("Ping-Pong interaction details: ");
-			for (java.util.Map.Entry<String, Object> e : args.entrySet()) {
-				System.out.println(e.getKey() + " " + ((Host)e.getValue()).getName());
-			}
+			
 		}
 		
 	}
