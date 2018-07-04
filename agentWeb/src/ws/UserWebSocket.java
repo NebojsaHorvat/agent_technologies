@@ -211,6 +211,18 @@ public class UserWebSocket implements MessageListener {
 						s.getBasicRemote().sendText(wsmJSON);
 				}
 			}
+			else if(message.getType() == JMSMessageToWebSocketType.LOG) {
+				Object log = message.getContent();
+				ObjectMapper mapper = new ObjectMapper();
+				WebSocketMessage wsm = new WebSocketMessage();
+				wsm.setType(WebSocketMessageType.LOG);
+				String content = mapper.writeValueAsString(log);
+				wsm.setContent(content);
+				String wsmJSON = mapper.writeValueAsString(wsm);
+				for (Session s : sessions) {
+						s.getBasicRemote().sendText(wsmJSON);
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
