@@ -6,13 +6,14 @@ import agentManagement.AgentManagerLocal;
 import agentUtilities.AID;
 import agentUtilities.Agent;
 import agentUtilities.AgentType;
+import agentUtilities.LogUtility;
 
 public class ContractnetAgent extends Agent{
 
 	public ContractnetAgent () {}
 	
-	public ContractnetAgent (AID aid, AgentType agentType, MessageManager msm, AgentManagerLocal agm) {
-		super(aid,agentType, msm, agm);
+	public ContractnetAgent (AID aid, AgentType agentType, MessageManager msm, AgentManagerLocal agm, LogUtility log) {
+		super(aid,agentType, msm, agm, log);
 	}
 	
 	@Override

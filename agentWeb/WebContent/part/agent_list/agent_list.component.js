@@ -34,7 +34,7 @@ angular.module('agent_list')
 			this.send = (agentClass) =>{
 				agentService.activateAgent(agentClass.agentClass,this.agentName,agentClass.host)
 				.then( (response) => {
-					alert('Agent added')
+					
 				}, () => {
 					alert('Could not activate agent')
 				});
